@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { initProvide } from '../../utils/ether';
 
 function App() {
+  useEffect(() => {
+    initProvide().then(con => {
+      console.log('初始合约', con);
+    }).catch(() => {
+      
+    })
+  }, [])
   return (
     <div className="App">
       <header className="App-header">
