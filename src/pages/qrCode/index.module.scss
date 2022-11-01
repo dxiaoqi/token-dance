@@ -1,0 +1,46 @@
+.container {
+  background-color:  #303030;
+  height: 100vh;
+  padding: 0px 23px;
+  .header {
+    padding-top: 52px;
+    display: flex;
+    color: aliceblue;
+    img {
+      margin-right: 26px;
+    }
+    h1 {
+      margin: 0px;
+    }
+    p {
+      opacity: 0.5;
+      word-wrap: break-word;
+    }
+  }
+  .meetInfo {
+    margin-top: 20px;
+    background: #1F2930;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 13px 22px;
+    .infoItem {
+      display: flex;
+      align-items: center;
+      label {
+        color: #A6A6A6;
+        display: flex;
+        margin-right: 36px;
+        align-items: center;
+        opacity: 0.5;
+        img {
+          margin-right: 11px;
+        }
+      }
+      span {
+        color: #A6A6A6;
+      }
+    }
+  }
+}
