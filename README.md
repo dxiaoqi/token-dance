@@ -26,3 +26,11 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 ## 使用技术栈
 react typescript mobx sass etherjs metamask.js
+
+## 模块
+util 通用功能
+config 项目配置
+pages 页面
+store 本地存储
+components 通用组件
+assert 资源

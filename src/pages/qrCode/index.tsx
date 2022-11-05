@@ -4,6 +4,8 @@ import styles from './index.module.scss';
 import Icon from'../../assert/icon.png';
 import Where from '../../assert/where.png'
 import When from '../../assert/when.png'
+import Html5QrcodePlugin from '../../components/scancode';
+import { Html5QrcodeScanType } from 'html5-qrcode';
 const Qr = () => {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -12,6 +14,12 @@ const Qr = () => {
   const gen = () => {
     if (ref.current)
     genQr(ref.current, '其实我们都知道')
+  }
+  const rtcRead = () => {
+    
+  }
+  const rtcErr = (code: any) => {
+    console.log(code)
   }
   return (
     <div className={styles.container} ref={ref}>
@@ -45,7 +53,49 @@ const Qr = () => {
           </span>
         </div>
       </div>
+      <div className={styles.line}></div>
+      <div className={styles.tokenInfo}>
+        <p>
+          <label>主链</label><span>-</span>
+        </p>
+        <p>
+          <label>主链</label><span>-</span>
+        </p>
+        <p>
+          <label>主链</label><span>-</span>
+        </p>
+        <p>
+          <label>主链</label><span>-</span>
+        </p>
+        <p>
+          <label>主链</label><span>2</span>
+        </p>
+      </div>
+      <div className={styles.line}></div>
+
+      <div className={styles.invite}>
+        <div className={styles.add}>
+          invite
+        </div>
+        <div className={styles.add}>
+          invite
+        </div>
+      </div>
+      <p className={styles.tip}>
+      You can click the invite button to invite 2 people to the conference
+      </p>
       <button onClick={gen}>生成二维码</button>
+      <button onClick={gen}>扫描二维码</button>
+      <Html5QrcodePlugin
+        config={{
+          fps: 10,
+          qrbox: 10,
+          disableFlip: false,
+          supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+        }}
+        verbose={false}
+        qrCodeErrorCallback={rtcRead}
+        qrCodeSuccessCallback={rtcErr}/>
     </div>)
 }
 
