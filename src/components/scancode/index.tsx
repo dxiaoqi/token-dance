@@ -9,7 +9,7 @@ interface IProps {
     supportedScanTypes: Html5QrcodeScanType[];
   }
   verbose: boolean;
-  qrCodeSuccessCallback: (data: any) => void
+  qrCodeSuccessCallback: (data: any, text: any) => void
   qrCodeErrorCallback: (data: any) => void;
 }
 const Html5QrcodePlugin: React.FC<IProps> =(props) => {
