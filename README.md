@@ -25,7 +25,8 @@ Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 ## 使用技术栈
-react typescript mobx sass etherjs metamask.js
+react typescript mobx sass etherjs metamask.js , [antd-mobile](https://mobile.ant.design/components/button)
+
 
 ## 模块
 util 通用功能
