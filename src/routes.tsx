@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 const App = React.lazy(() => import(/* webpackChunkName: "Home" */ "./pages/home/App"));
 const Qr = React.lazy(() => import("./pages/qrCode/index"));
 const Scancode = React.lazy(() => import("./pages/scancode"));
-
+const Invite = React.lazy(() => import("./pages/invite"));
 interface RouterConfig {
     path: string;
     title: string;
@@ -23,6 +23,8 @@ export const mainRouteConfig = [
         children: []
     }, {
         path: 'scancode', title: "二维码扫描", component: Scancode,
+    }, {
+        path: 'invite', title: '邀请', component: Invite
     }
 ];
 
