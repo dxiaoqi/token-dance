@@ -17,6 +17,6 @@ export const initProvide =  async () => {
     return contract;
   } else {
     console.log('Please install MetaMask!');
-    return Promise.reject('lease install MetaMask!');
+    return Promise.reject('Please install MetaMask!');
   }
 }

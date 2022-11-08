@@ -1,10 +1,12 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
 
-
 const App = React.lazy(() => import(/* webpackChunkName: "Home" */ "./pages/home/App"));
 const Qr = React.lazy(() => import("./pages/qrCode/index"));
 const Scancode = React.lazy(() => import("./pages/scancode"));
+const ConnectWallet = React.lazy(() => import("./pages/connectWallet"));
+const WaitingTicken = React.lazy(() => import("./pages/waitingTicken"));
+const GetTicken = React.lazy(() => import("./pages/getTicken"));
 
 interface RouterConfig {
     path: string;
@@ -23,6 +25,15 @@ export const mainRouteConfig = [
         children: []
     }, {
         path: 'scancode', title: "二维码扫描", component: Scancode,
+    },{
+        path: "/connect", title: "链接钱包", component: ConnectWallet,
+        children: []
+    },{
+        path: "/waitingticken", title: "等待ticken", component: WaitingTicken,
+        children: []
+    },{
+        path: "/getticken", title: "邀请函弹窗", component: GetTicken,
+        children: []
     }
 ];
 
