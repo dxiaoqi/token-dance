@@ -7,6 +7,7 @@ const Qr = React.lazy(() => import("./pages/qrCode/index"));
 const Scancode = React.lazy(() => import("./pages/scancode"));
 const CreateToken = React.lazy(() => import("./pages/createToken"));
 
+const Invite = React.lazy(() => import("./pages/invite"));
 interface RouterConfig {
     path: string;
     title: string;
@@ -28,6 +29,8 @@ export const mainRouteConfig = [
     },
     {
         path: 'createtoken', title: "新门票", component: CreateToken,
+    }, {
+        path: 'invite', title: '邀请', component: Invite
     }
 ];
 
