@@ -2,20 +2,39 @@
   background-color:  #000000;
   padding: 0px 23px;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   .header {
     padding-top: 52px;
     display: flex;
     color: aliceblue;
-    img {
-      margin-right: 26px;
+    justify-content: center;
+    .avatar {
+      display: flex;
+      height: 105px;
+      position: relative;
+      width: 105px;
+      img {
+        position: absolute;
+        &:nth-child(2) {
+          left: 20px;
+          top: 10px;
+        }
+      }
     }
-    h1 {
-      margin: 0px;
-    }
-    p {
-      opacity: 0.5;
-      word-wrap: break-word;
-    }
+  }
+  .address {
+    width: 145px;
+    height: 28px;
+    color: #FFFFFF;
+    background: rgba(86, 169, 249, 0.2);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 100px;
   }
   .tip {
     color: #FFFFFF;

@@ -71,8 +71,21 @@
   }
   .invite {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     margin:  34px 0px;
+    .avatar {
+      display: flex;
+      height: 105px;
+      position: relative;
+      width: 105px;
+      img {
+        position: absolute;
+        &:nth-child(2) {
+          left: 15px;
+          top: 10px;
+        }
+      }
+    }
     .add {
       width: 71px;
       height: 71px;
@@ -86,6 +99,10 @@
       margin: 0px 40px;
       opacity: 0.5;
     }
+  }
+  .btn {
+    display: flex;
+    justify-content: center;
   }
   .tip {
     color: #FFFFFF;
