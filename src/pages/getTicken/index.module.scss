@@ -1,51 +1,79 @@
 .container {
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     background: #001419;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     background-image: url('../../assert/bg-ticket.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
 
+    .overlay {
+        height: 100vh;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-image: url('../../assert/bg-cord.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .imageText {
+            width: 181px;
+            height: 39px;
+            font-family: 'Inter';
+            font-style: italic;
+            font-weight: 800;
+            font-size: 20px;
+            line-height: 38px;
+            color: #FFFBFF;
+            margin-top: 52px;
+        }
+    }
+
     .title {
         position: absolute;
         top: 5%;
-        text-align: center;
-        width: 210px;
-        height: 38px;
-        font-family: 'Inter';
-        font-style: italic;
-        font-weight: 800;
-        font-size: 31px;
-        line-height: 38px;
-        color: linear-gradient(95.51deg, #3E89DF 6.79%, #FFFFFF 47.3%, #F14EFF 98.05%);
-        background-clip: text;
-        text-fill-color: transparent;
-        color: #FFFBFF;
+        width: 395px;
+        height: 50px;
+        transform: scale(0.5);
+        background-image: url('../../assert/NewTicken.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 
     .imageContainer {
-        background-image: url('../../assert/bg-personal.png');
+        width: 156.89px;
+        height: 162.99px;
+        background-image: url('../../assert/icon.png');
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
-        width: 309px;
-        height: 400px;
         border-radius: 18.845px;
     }
 
-    .getItBtn {
-        width: 181px;
-        height: 50px;
-        margin-top: 22px;
-        background-image: url('../../assert/getIt.png');
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
+    .getItBtnWrapper{
+        display: flex;
+        justify-content: center;
+        .getItBtn {
+            width: 50vw;
+            height: 50px;
+            margin-top: 22px;
+            position: absolute;
+            bottom: 15%;
+            background-image: url('../../assert/getIt.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
     }
+
+   
+
 }

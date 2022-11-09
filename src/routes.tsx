@@ -10,6 +10,7 @@ const Scancode = React.lazy(() => import("./pages/scancode"));
 const ConnectWallet = React.lazy(() => import("./pages/connectWallet"));
 const WaitingTicken = React.lazy(() => import("./pages/waitingTicken"));
 const GetTicken = React.lazy(() => import("./pages/getTicken"));
+const List = React.lazy(() => import("./pages/list"));
 
 interface RouterConfig {
     path: string;
@@ -36,6 +37,9 @@ export const mainRouteConfig = [
         children: []
     }, {
         path: "/getticken", title: "邀请函弹窗", component: GetTicken,
+        children: []
+    },{
+        path: "/list", title: "个人页", component: List,
         children: []
     }
 ];
