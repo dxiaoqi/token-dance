@@ -24,7 +24,6 @@ function App() {
     <div className="App">
       <div className="btn" onClick={gotoConnect}>
       </div>
-      {/* <WalletCard /> */}
     </div>
   );
 }

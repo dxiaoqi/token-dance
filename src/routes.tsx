@@ -1,5 +1,8 @@
+import userEvent from '@testing-library/user-event';
 import React from 'react'
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import stores from './store';
+const user = stores.user;
 
 const App = React.lazy(() => import(/* webpackChunkName: "Home" */ "./pages/home/App"));
 const Qr = React.lazy(() => import("./pages/qrCode/index"));
@@ -25,47 +28,79 @@ export const mainRouteConfig = [
         children: []
     }, {
         path: 'scancode', title: "二维码扫描", component: Scancode,
-    },{
+    }, {
         path: "/connect", title: "链接钱包", component: ConnectWallet,
         children: []
-    },{
+    }, {
         path: "/waitingticken", title: "等待ticken", component: WaitingTicken,
         children: []
-    },{
+    }, {
         path: "/getticken", title: "邀请函弹窗", component: GetTicken,
         children: []
     }
 ];
 
 const renderRouter = (routerList: RouterConfig[]) => {
-  return routerList.map((item) => {
-      const { path, children } = item;
-      // 补一个鉴权，未登录转到首页
-      return <Route
-          key={path}
-          path={path}
-          element={<item.component />}
-      >
-          {!!children && children.map(i => {
-              return <Route
-                  key={i.path}
-                  path={i.path}
-                  element={<i.component />}
-              />
-          })}
-      </Route >;
-  });
+    return routerList.map((item) => {
+        const { path, children } = item;
+        // 补一个鉴权，未登录转到首页
+        return <Route
+            key={path}
+            path={path}
+            element={<item.component />}
+        >
+            {!!children && children.map(i => {
+                return <Route
+                    key={i.path}
+                    path={i.path}
+                    element={<i.component />}
+                />
+            })}
+        </Route >;
+    })
+    
+    // @ts-ignore
+    if (user.userInfo.address) {
+        console.log("11111");
+        return routerList.map((item) => {
+            const { path, children } = item;
+            // 补一个鉴权，未登录转到首页
+            return <Route
+                key={path}
+                path={path}
+                element={<item.component />}
+            >
+                {!!children && children.map(i => {
+                    return <Route
+                        key={i.path}
+                        path={i.path}
+                        element={<i.component />}
+                    />
+                })}
+            </Route >;
+        })
+    } else {
+        console.log("2222");
+        return <Route
+            key="/connect"
+            path="/connect"
+            element={<ConnectWallet />}
+        >
+        </Route >;
+    }
 };
 
 
+
+
 const Routers = () => {
-  return (
-    <React.Suspense>
-        <Routes>
-            {renderRouter(mainRouteConfig)}
-        </Routes>
-    </React.Suspense>
-  )
+    return (
+        <React.Suspense>
+            <Routes>
+                {renderRouter(mainRouteConfig)}
+            </Routes>
+        </React.Suspense>
+    )
 }
 
 export default Routers

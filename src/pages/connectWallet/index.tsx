@@ -1,36 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import avatar from '../../assert/avatar.png';
-import { ethers } from 'ethers';
+import { observer } from 'mobx-react';
+import stores from '../../store';
+import { initProvide } from '../../utils/ether';
 
 function ConnectWallet() {
-    const [publicKey, setPublickey] = useState();
-    const [network, setNetwork] = useState();
-    const [chainId, setChainId] = useState();
-    const [msg, setMsg] = useState();
-
+    const user = stores.user;
 
     const connectButton = async () => {
-        const { ethereum } = window;
-        console.log("ethereum",ethereum);
-        if (ethereum.isMetaMask) {
-            const provider = new ethers.providers.Web3Provider(ethereum);
-            const accounts = await provider.send("eth_requestAccounts", []);
-            const balance = await provider.getBalance(accounts[0], "latest");
-
-            const { name, chainId } = await provider.getNetwork();
-            console.log("provider",provider);
-            console.log("accounts: " , accounts);
-            console.log("name",name);
-            console.log("chainId",chainId);
-            console.log("balance",balance);
-
-            // setNetwork(name);
-            // setChainId(chainId);
-            // setPublickey(accounts[0]);
-        } else {
-            // setMsg("Install MetaMask");
-        }
+        initProvide().then(async ({ web3Provider }) => {
+            if (web3Provider) {
+                const accounts =await  web3Provider.send("eth_requestAccounts", []);
+                user.setUser({ address: accounts[0] });
+            }
+        }).catch((err)=>{
+            console.log("please install metamask");
+        })
     };
 
     return (
@@ -50,4 +36,4 @@ function ConnectWallet() {
     );
 }
 
-export default ConnectWallet;
+export default observer(ConnectWallet);
