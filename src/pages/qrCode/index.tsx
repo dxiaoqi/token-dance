@@ -4,6 +4,10 @@ import styles from './index.module.scss';
 import Icon from'../../assert/icon.png';
 import Where from '../../assert/where.png'
 import When from '../../assert/when.png'
+import InviteAvatar from '../../assert/invite_avatar.png';
+import Avatar from '../../assert/invite-avatar.png';
+import InviteBtn from '../../assert/invite-btn.png';
+import { Dialog } from 'antd-mobile';
 const Qr = () => {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -12,6 +16,19 @@ const Qr = () => {
   const gen = () => {
     if (ref.current)
     genQr(ref.current, '其实我们都知道')
+  }
+  const canInvite = () => {
+    // 判断当前用户是否可以邀请
+    //  CanInvite(ticketAddress address,invitorAddress address) public view returns(bool);
+    return true;
+  }
+  const copy = () => {
+    Dialog.alert({
+      content: '人在天边月上明',
+      onConfirm: () => {
+        console.log('Confirmed')
+      },
+    })
   }
   return (
     <div className={styles.container} ref={ref}>
@@ -66,16 +83,18 @@ const Qr = () => {
       <div className={styles.line}></div>
 
       <div className={styles.invite}>
-        <div className={styles.add}>
-          invite
-        </div>
-        <div className={styles.add}>
-          invite
-        </div>
+        {
+          [11,22].map(e => (
+            <div className={styles.avatar}>
+              <img src={InviteAvatar} alt="" />
+              <img src={Avatar} alt="" />
+            </div>
+          ))
+        }
       </div>
-      <p className={styles.tip}>
-      You can click the invite button to invite 2 people to the conference
-      </p>
+      <div onClick={copy} className={styles.btn}>
+        <img width={200} src={InviteBtn} alt="" />
+      </div>
     </div>)
 }
 
