@@ -11,6 +11,7 @@ const ConnectWallet = React.lazy(() => import("./pages/connectWallet"));
 const WaitingTicken = React.lazy(() => import("./pages/waitingTicken"));
 const GetTicken = React.lazy(() => import("./pages/getTicken"));
 const List = React.lazy(() => import("./pages/list"));
+const TickenDetail = React.lazy(() => import("./pages/tickenDetail"));
 
 interface RouterConfig {
     path: string;
@@ -40,6 +41,9 @@ export const mainRouteConfig = [
         children: []
     },{
         path: "/list", title: "个人页", component: List,
+        children: []
+    },{
+        path: "/detail", title: "点开票", component: TickenDetail,
         children: []
     }
 ];

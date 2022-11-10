@@ -4,8 +4,10 @@ import avatar from '../../assert/avatar.png';
 import { observer } from 'mobx-react';
 import stores from '../../store';
 import { initProvide } from '../../utils/ether';
+import { useNavigate } from "react-router-dom";
 
 function ConnectWallet() {
+    let navigate = useNavigate();
     const user = stores.user;
 
     const connectButton = async () => {
@@ -13,6 +15,7 @@ function ConnectWallet() {
             if (web3Provider) {
                 const accounts =await  web3Provider.send("eth_requestAccounts", []);
                 user.setUser({ address: accounts[0] });
+                navigate("/list"); 
             }
         }).catch((err)=>{
             console.log("please install metamask");
