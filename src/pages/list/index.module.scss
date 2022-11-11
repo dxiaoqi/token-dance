@@ -1,0 +1,31 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: #001419;
+    background-image: url('../../assert/bg-ticket.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding-top: 35px;
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 50px;
+        .address {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 2px 20px;
+            gap: 10px;
+            width: 145px;
+            height: 28px;
+            background: rgba(86, 169, 249, 0.2);
+            border-radius: 20px;
+        }
+    }
+}
