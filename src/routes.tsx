@@ -13,6 +13,7 @@ const GetTicken = React.lazy(() => import("./pages/getTicken"));
 const List = React.lazy(() => import("./pages/list"));
 const TickenDetail = React.lazy(() => import("./pages/tickenDetail"));
 
+const Invite = React.lazy(() => import("./pages/invite"));
 interface RouterConfig {
     path: string;
     title: string;
@@ -44,7 +45,10 @@ export const mainRouteConfig = [
         children: []
     },{
         path: "/detail", title: "点开票", component: TickenDetail,
-        children: []
+        children: [],
+    },{
+        path: 'invite', title: '邀请', component: Invite,
+        children: [],
     }
 ];
 

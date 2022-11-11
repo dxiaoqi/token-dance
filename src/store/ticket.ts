@@ -8,7 +8,7 @@ class Ticket {
   }
 
   @action
-  setUser(tickets: any) {
+  setTicket(tickets: any) {
     this.ticketsInfo = tickets;
   }
 }
