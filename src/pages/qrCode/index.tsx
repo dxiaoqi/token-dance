@@ -11,6 +11,7 @@ import InviteBtn from '../../assert/invite-btn.png';
 import qrCode from '../../assert/qrcode.png';
 import { Button, Dialog, Toast } from 'antd-mobile';
 const Qr = () => {
+  //  合并
   const search = querystring.parse(window.location.href.split('?')[1]);
   const cid = search.cid; // 用户信息，可以用来，不传默认打开自己的
   const tid = search.tid; // 票据信息
