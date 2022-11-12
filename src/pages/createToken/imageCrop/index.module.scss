@@ -1,0 +1,20 @@
+.container {
+  display: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  align-self: flex-end;
+  height: 36px;
+  line-height: 36px;
+  font-size: 20px;
+  text-align: center;
+  background: #ccc;
+  color: #fff;
+}

@@ -16,24 +16,75 @@ import {
   Switch,
   Checkbox
 } from 'antd-mobile'
+import { NFTStorage } from 'nft.storage'
 import dayjs from 'dayjs'
 import styles from './index.module.scss';
-import Icon from'../../assert/icon.png';
-import Where from '../../assert/where.png'
-import When from '../../assert/when.png'
-import { timeColumns } from './pickerData'
+import ImageCrop from './imageCrop';
 import type { DatePickerRef } from 'antd-mobile/es/components/date-picker'
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
 
-const Qr = () => {
-  const [pickerVisible, setPickVisible] = useState(false);
-  const [fileList, setFileList] = useState<ImageUploadItem[]>([])
+const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJERDdDNDljMzRjN0IxMDVGNDdDNzA0MDI3YTRkZDhBNEU3MzdiMDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODA2OTU4NDE1MCwibmFtZSI6InRva2VuLWRhbmNlLWlwZnMta2V5In0.7D7Ea8v2FqTHNxa_4AQA-VEzsGdPbvjvtiQF8Squ5Kk'
+const client = new NFTStorage({ token: NFT_STORAGE_TOKEN })
+let uploading = false;
+let cropperBlob = '';
+const CreateToken = () => {
+  const [cropperUrl, setCropperUrl] = useState<string>('');
+  const [fileList, setFileList] = useState<ImageUploadItem[]>([
+    // {
+    //   url:'http://localhost:3000/4a7cde6b-b09d-49b3-bc16-ee5ced89c26b'
+    // }
+  ])
+  const [showCropper, setShowCropper] = useState<Boolean>(false);
   const ref = useRef<HTMLDivElement>(null)
+
+  const confirmCb = function(blob: Blob) {
+    setShowCropper(false);
+    const reader = new FileReader();
+    reader.onload = function(e: ProgressEvent<FileReader>) {
+      const target = e?.target;
+      uploading = false;
+      if(target?.result) {
+        cropperBlob = target.result as string;
+        // debugger
+        // setFileList([{
+        //   url: target.result as string
+        // }])
+      }
+      console.log('onload', e?.target);
+    }
+    const dataUrl = reader.readAsDataURL(blob);
+    return false;
+    console.log('dataUrl: ' + dataUrl);
+    debugger
+    // setFileList([{
+      // url: dataUrl
+    // }])
+    console.log('blob', blob, URL.createObjectURL(blob));
+  }
 
   async function sleep(time: number) {
     return new Promise<void>((resolve, reject) => {
       setTimeout(() => resolve(), time);
     })
+  }
+  async function uploadFun(file: File) {
+    console.log('file', file)
+    const url = URL.createObjectURL(file);
+    setCropperUrl(url);
+    setShowCropper(true);
+    uploading = true;
+    await new Promise<void>((resolve, reject) => {
+      setInterval(() => {
+        if(!uploading) {
+          resolve();
+        }
+      }, 100)
+    })
+
+    return {url: cropperBlob}
+    // const fileBlobData = new Blob([file]);
+    // const cid = await client.storeBlob(fileBlobData);
+    // return {url: `https://${cid}.ipfs.nftstorage.link/`}
   }
   async function mockUpload(file: File) {
     console.log('uploading')
@@ -77,19 +128,19 @@ const Qr = () => {
           label='上传票面图片（尺寸为）'
           rules={[
             {
-              required: true,
+              // required: true,
               message: '请上传票面图片'
             }
           ]}
         >
           <ImageUploader
             value={fileList}
-            onChange={setFileList}
-            upload={mockUpload}
+            // onChange={setFileList}
+            upload={uploadFun}
             maxCount={1}
+            imageFit="contain"
             showUpload={fileList.length < 1}
             onCountExceed={exceed => {
-              // Toast.show(`最多选择 ${maxCount} 张图片，你多选了 ${exceed} 张`)
             }}
           />
         </Form.Item>
@@ -108,29 +159,10 @@ const Qr = () => {
             }
           ]}
         >
-          {/* <Picker
-            style={{
-              // '--title-font-size': '13px',
-              // '--header-button-font-size': '13px',
-              // '--item-font-size': '13px',
-              // '--item-height': '30px',
-            }}
-            // defaultValue={['Wed', 'pm']}
-            columns={timeColumns}
-            visible={pickerVisible}
-            onClose={() => {
-              setPickVisible(false)
-            }}
-          /> */}
-
           <DatePicker
             precision='minute'
           >
             {value => {
-              // if(value) {
-              //   setPickVisible(true) 
-              // }
-
               return value ? dayjs(value).format('YYYY-MM-DD HH:mm') : '请选择时间'
             }
             }
@@ -148,15 +180,28 @@ const Qr = () => {
         >
           <Input placeholder='' />
         </Form.Item>
-        <Form.Item name='detail' label='会议描述'>
+        <Form.Item
+          name='detail'
+          label='会议描述'
+          
+        >
           <TextArea
             maxLength={500}
             rows={3}
             showCount
           />
         </Form.Item>
-        <Form.Item name='type' label='选择会议类型'>
-            <Radio.Group defaultValue='0'>
+        <Form.Item
+          name='type'
+          label='选择会议类型'
+          rules={[
+            {
+              required: true,
+              message: '请选择会议类型'
+            }
+          ]}
+        >
+            <Radio.Group>
               <Space direction='vertical'>
                 <Radio value='0'>普通会议</Radio>
                 <Radio value='1'>裂变会议</Radio>
@@ -164,25 +209,10 @@ const Qr = () => {
                 <Radio value='3'>邀请会议</Radio>
               </Space>
             </Radio.Group>
-          {/* <Selector
-            columns={1}
-            // multiple
-            options={[
-              { label: '普通会议', value: '0' },
-              { label: '裂变会议', value: '1' },
-              { label: '秘密会议', value: '2' },
-              { label: '邀请会议', value: '3' },
-            ]}
-          /> */}
         </Form.Item>
-        {/* <Form.Item name='slider-demo' label='滑块选择'>
-          <Slider ticks step={10} />
-        </Form.Item> */}
         <Form.Item
-          // initialValue={1}
           rules={[
             {
-              // max: 5,
               min: 1,
               type: 'integer',
               transform(value) {
@@ -195,14 +225,10 @@ const Qr = () => {
           label='票价设置'
         >
           <Input placeholder='请输入0以上的整数' type="integer"  />
-
-          {/* <Stepper /> */}
         </Form.Item>
         <Form.Item
-          // initialValue={1}
           rules={[
             {
-              // max: 5,
               min: 1,
               type: 'integer',
               transform(value) {
@@ -215,11 +241,10 @@ const Qr = () => {
           label='会议总人数上限'
         >
           <Input placeholder='请输入最大邀请人数' type="integer"  />
-
-          {/* <Stepper /> */}
         </Form.Item>
       </Form>
+      {showCropper ? <ImageCrop confirmCb={confirmCb} url={cropperUrl}></ImageCrop> : null}
     </div>)
 }
 
-export default Qr;
+export default CreateToken;
