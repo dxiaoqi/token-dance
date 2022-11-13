@@ -26,7 +26,9 @@ import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
 const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJERDdDNDljMzRjN0IxMDVGNDdDNzA0MDI3YTRkZDhBNEU3MzdiMDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODA2OTU4NDE1MCwibmFtZSI6InRva2VuLWRhbmNlLWlwZnMta2V5In0.7D7Ea8v2FqTHNxa_4AQA-VEzsGdPbvjvtiQF8Squ5Kk'
 const client = new NFTStorage({ token: NFT_STORAGE_TOKEN })
 let uploading = false;
-let cropperBlob = '';
+let cropperBlob: Blob;
+let fileName = '';
+let fileType = '';
 const CreateToken = () => {
   const [cropperUrl, setCropperUrl] = useState<string>('');
   const [fileList, setFileList] = useState<ImageUploadItem[]>([
@@ -39,27 +41,8 @@ const CreateToken = () => {
 
   const confirmCb = function(blob: Blob) {
     setShowCropper(false);
-    const reader = new FileReader();
-    reader.onload = function(e: ProgressEvent<FileReader>) {
-      const target = e?.target;
-      uploading = false;
-      if(target?.result) {
-        cropperBlob = target.result as string;
-        // debugger
-        // setFileList([{
-        //   url: target.result as string
-        // }])
-      }
-      console.log('onload', e?.target);
-    }
-    const dataUrl = reader.readAsDataURL(blob);
-    return false;
-    console.log('dataUrl: ' + dataUrl);
-    debugger
-    // setFileList([{
-      // url: dataUrl
-    // }])
-    console.log('blob', blob, URL.createObjectURL(blob));
+    cropperBlob = blob;
+    uploading = false;
   }
 
   async function sleep(time: number) {
@@ -69,22 +52,39 @@ const CreateToken = () => {
   }
   async function uploadFun(file: File) {
     console.log('file', file)
+    fileName = file.name;
+    fileType = file.type;
     const url = URL.createObjectURL(file);
     setCropperUrl(url);
     setShowCropper(true);
     uploading = true;
     await new Promise<void>((resolve, reject) => {
-      setInterval(() => {
+      const interval = setInterval(() => {
         if(!uploading) {
+          clearInterval(interval);
           resolve();
         }
       }, 100)
     })
 
-    return {url: cropperBlob}
+    const newFile = new File([cropperBlob], fileName, {type: fileType})
+    const newUrl = URL.createObjectURL(newFile);
+
+    return {url: newUrl}
     // const fileBlobData = new Blob([file]);
+    // https://bafkreihsilbagqicdvsm6uwnejahe6fmvsuqarzbkhhzdf3ccc2jelkmcq.ipfs.nftstorage.link/
+    // const fileBlobData = cropperBlob;
+    // const newFile = new File([cropperBlob], fileName, {type: fileType})
+    // console.log('newFile', newFile)
     // const cid = await client.storeBlob(fileBlobData);
+    // const metadata = await client.store({
+    //   name: 'My sweet NFT',
+    //   description: 'Just try to funge it. You can\'t do it.',
+    //   image: newFile
+    // })
+    // debugger
     // return {url: `https://${cid}.ipfs.nftstorage.link/`}
+    // return {url: ''}
   }
   async function mockUpload(file: File) {
     console.log('uploading')
@@ -102,8 +102,27 @@ const CreateToken = () => {
   useEffect(() => {
     console.log((window as any).QrCode)
   }, [])
-  const onFinish = (values: Object) => {
+  const onFinish = async (values: any) => {
     console.log('finish', values)
+    const newFile = new File([cropperBlob], fileName, {type: fileType})
+    const metadata = await client.store({
+      name: values.title,
+      description: values.detail,
+      image: newFile,
+      location: values.address,
+      properties: {
+        title: values.title,
+        shortTitle: values.shortTitle,
+        time: values.time,
+        address: values.address,
+        detail: values.detail,
+        type: values.type,
+        price: values.price,
+        maxInvite: values.maxInvite
+
+      }
+    })
+    console.log('metadata:', metadata)
   }
   return (
     <div className={styles.container} ref={ref}>
@@ -128,14 +147,14 @@ const CreateToken = () => {
           label='上传票面图片（尺寸为）'
           rules={[
             {
-              // required: true,
+              required: true,
               message: '请上传票面图片'
             }
           ]}
         >
           <ImageUploader
             value={fileList}
-            // onChange={setFileList}
+            onChange={setFileList}
             upload={uploadFun}
             maxCount={1}
             imageFit="contain"
@@ -146,7 +165,7 @@ const CreateToken = () => {
         </Form.Item>
 
         <Form.Item
-          name='birthday'
+          name='time'
           label='会议时间'
           trigger='onConfirm'
           onClick={(e, datePickerRef: RefObject<DatePickerRef>) => {
