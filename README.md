@@ -35,3 +35,27 @@ pages 页面
 store 本地存储
 components 通用组件
 assert 资源
+
+## 合约地址
+https://github.com/TokendanceSocial/juno_ticket/tree/master/abi/pretty/contracts
+
+```js
+const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+// 创建合约  => IJunoabi => 创建了合约工厂的链接
+const contract = new ethers.Contract(address: string, abi: sting[], web3Provider)
+// 拿到票的地址
+contract.Holds(uid) => Promise<string[]> => ticket_address[]
+
+// 创建票据合约  => INymphabi => 创建了票据的链接
+const contract = new ethers.Contract(ticket_address: string, abi: sting[], web3Provider)
+
+
+
+    // 获取ticket的ipfs地址
+    const ipfsUri = await contract?.tokenURI?.(1)
+    // 去获取ticket的源信息
+    const { data } = await axios.get(ipfsUri)
+    // 获取ticket的举办时间
+    const time = await contract?.HoldTime();
+    // 获取票的主办者
+    const owner = await contract?.owner();

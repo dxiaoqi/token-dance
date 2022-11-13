@@ -27,6 +27,8 @@ export const INymphabi = [
   "function CanSign(address ownerAddress) external view returns (bool)", // 能否签到
   "function GetValue() external view returns (uint256)", // 返回票价
   "function tokenURI(uint256) view returns (string)", // 获取票地址
+  "function balanceOf(address) view returns (uint256)", // 是否有票
+  "function owner() view returns (address)"
 ]
 
 export const initProvide = async () => {

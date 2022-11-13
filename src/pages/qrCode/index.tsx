@@ -15,7 +15,6 @@ import { initProvide, INymphabi } from '../../utils/ether';
 import { BigNumber, ethers } from 'ethers';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import { NFTStorage  } from 'nft.storage'
 
 interface TicketInfo {
   description: string, 
@@ -24,40 +23,34 @@ interface TicketInfo {
   name: string,
   location: string
   time: string;
+  owner: string;
 }
 let req = {} as Etherabi
-const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJERDdDNDljMzRjN0IxMDVGNDdDNzA0MDI3YTRkZDhBNEU3MzdiMDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODA2OTU4NDE1MCwibmFtZSI6InRva2VuLWRhbmNlLWlwZnMta2V5In0.7D7Ea8v2FqTHNxa_4AQA-VEzsGdPbvjvtiQF8Squ5Kk'
-const client = new NFTStorage({ token: NFT_STORAGE_TOKEN })
+let uid = ''
+let signer = {} as any;
+
 const Qr = () => {
   const search = querystring.parse(window.location.href.split('?')[1]);
-  const cid = '0x5254D72BB5604D0Ddc916ed7A45306ca88f9DeCB'; //search.cid; // 用户信息，可以用来，不传默认打开自己的
-  const tid = '0xd7a277E83F7bC2dC3fA21b80dA964651bEe5C3a4';//search.tid; // 票据信息
-  const hid = search.hid; // 主办方的地址
+  const cid: string = search?.cid as string || '0x5254D72BB5604D0Ddc916ed7A45306ca88f9DeCB'; //search.cid; // 参会人信息
+  const tid: string = search?.tid as string || '0x7eEC270e6ddAF482ada1453f501CB5CBE9A511Eb'//'0xd7a277E83F7bC2dC3fA21b80dA964651bEe5C3a4';//search.tid; // 票据信息
+  const hid: string = search?.hid as string || '0xd5c8A05d1CdA1caA4956D4AAaE94C6632FC19fc0' //search.hid; // 主办方的地址
   const mode = search.mode; // 票据详情 ticket 加入票据 mint 验证 sign
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false);
-  const [uid, setUid] = useState('');
   const [info, setInfo] = useState<TicketInfo>();
   const [caninvite, setCanInvite] = useState(false);
 
   const [_canSign, setSign] = useState(false);
 
   const [_isSign, setIsSign] = useState(false);
-  const getTicket = () => {
-    // 拉取票据信息
-    return {
-      name: '会议名称',
-      metaInfo: {
-        address: '',
-        decs: ''
-      },
-      holdTimestampInSecord: Date.now()
-    }
-  }
+
+  const [_mint, setCanMint] = useState(false);
+
   const gen = () => {
     setVisible(true);
     // cid 参赛人的id
-    const url = window.location.origin + `/#/qrcode?mode=sign&tid=${tid}&cid=242442432`
+    const url = window.location.origin + `/#/qrcode?mode=sign&tid=${tid}&cid=${uid}`
+    console.log(url)
     setTimeout(() => {
       if (ref.current) {
         genQr(ref.current, url);
@@ -67,13 +60,13 @@ const Qr = () => {
   const canInvite = async () => {
     // 判断当前用户是否可以邀请, 票id,当前id
     const can = await req?.CanInvite?.()
-    console.log('可以邀请', can);
+    console.log('可以邀请', can, req);
     setCanInvite(can as boolean);
   }
   const copy = () => {
-    const url = window.location.origin + `/#/qrcode?mode=mint&tid=${tid}&cid=242442432`
+    const url = window.location.origin + `/#/qrcode?mode=mint&tid=${tid}&cid=${uid}&hid=${uid}`
     Dialog.alert({
-      content: url,
+      content: <p style={{ padding: '10px', wordBreak: 'break-all'}}>{url}</p>,
       onConfirm: () => {
         console.log('Confirmed')
       },
@@ -81,7 +74,8 @@ const Qr = () => {
   }
 
   const canSign = async () => {
-    const can = await req.CanSign?.(tid, cid);
+    const can = await req.CanSign?.(cid);
+    console.log('可以登录', can, req);
     setSign(can as boolean);
   }
   const isSign = async () => {
@@ -97,62 +91,72 @@ const Qr = () => {
   }
   const Sign =() => {
     // 验证 Sign(cid)
-    req?.Sign?.(tid);
-    Toast.show({
-      icon: 'success',
-      content: '验证成功',
+    signer?.Sign?.(cid).then((d: number) => {
+      Toast.show({
+        icon: 'success',
+        content: '验证成功',
+      })
+      localStorage.setItem(`${cid}-${tid}`.toString().toLowerCase(), "true")
+    }).catch((err: any) => {
+      console.log(err);
+      Toast.show({
+        icon: 'error',
+        content: '验证失败'
+      })
     })
-    localStorage.setItem(`${cid}-${tid}`.toString().toLowerCase(), "true")
   }
-
+  const canMint = async () => {
+    const can = await req?.balanceOf?.(uid);
+    console.log('是否mint', can?.toString());
+    setCanMint(Number(can?.toString()) === 0);
+  }
   const _fissionMint = () => {
     // 加入
-    req?._fissionMint?.((hid?.toString() || ''));
-    Toast.show({
-      icon: 'success',
-      content: '加入成功，3s中后跳转首页',
+    console.log(signer._fissionMint)
+    signer?._fissionMint?.(hid).then(() => {
+      Toast.show({
+        icon: 'success',
+        content: '加入成功，3s中后跳转首页',
+      })
+      setTimeout(() => {
+        // 跳转首页
+      }, 3000)
+    }).catch((err: any) => {
+      Toast.show({
+        icon: 'error',
+        content: 'mint error, please try again',
+      })
     })
-    setTimeout(() => {
-      // 跳转首页
-    }, 3000)
 
   }
   const initTicket = async () => {
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const accounts =await  web3Provider.send("eth_requestAccounts", []);
+    console.log(accounts)
     const contract = new ethers.Contract((tid || '')?.toString(), INymphabi, web3Provider);
+    req = contract as unknown as Etherabi;
+    signer = web3Provider.getSigner();
+    signer = contract.connect(signer);
+
+    // 获取ticket的ipfs地址
     const ipfsUri = await contract?.tokenURI?.(1)
+    // 去获取ticket的源信息
     const { data } = await axios.get(ipfsUri)
+    // 获取ticket的举办时间
     const time = await contract?.HoldTime();
+    // 获取票的主办者
+    const owner = await contract?.owner();
     setInfo({
       ...data,
-      time
+      time,
+      owner
     })
-    setUid(accounts?.[0]);
-
-    canInvite();
-    canSign();
-    isSign();
-    console.log(data, time.toString(), accounts)
-  //   initProvide().then(async ({ web3Provider }) => {
-  //     if (web3Provider) {
-  //       const contract = new ethers.Contract((tid || '')?.toString(), INymphabi, web3Provider);
-  //       console.log(contract);
-  //       req = contract as unknown as Etherabi;
-  //       const ipfsUri = req?.tokenURI?.(0)
-  //       const data = client.storeCar(ipfsUri);
-  //       cons
-  //       // setInfo({
-
-  //       // })
-  //         // const accounts =await  web3Provider.send("eth_requestAccounts", []);
-  //         // user.setUser({ address: accounts[0] });
-  //         // navigate("/list"); 
-  //         getTicket();
-  //     }
-  // }).catch((err)=>{
-  //     console.log("please install metamask");
-  // })
+    uid = accounts?.[0];
+    await canInvite();
+    await canSign();
+    await isSign();
+    await canMint();
+    console.log(accounts)
   }
   useEffect(() => {
     // 链接钱包地址，根据当前用户拉票据信息
@@ -165,7 +169,7 @@ const Qr = () => {
         <div>
           <div className={styles.title}><h1>{info?.name || "Token Dance"}</h1> 
           {
-            _canSign && <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
+            _canSign && mode === 'ticket' && <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
           }
           </div>
           <p>
@@ -197,19 +201,16 @@ const Qr = () => {
       <div className={styles.line}></div>
       <div className={styles.tokenInfo}>
         <p>
-          <label>主链</label><span>-</span>
+          <label>Creator</label><span className={styles.elc}>{info?.owner || '-'}</span>
         </p>
         <p>
-          <label>主链</label><span>-</span>
+          <label>Token Standard</label><span>ERC721</span>
         </p>
         <p>
-          <label>主链</label><span>-</span>
+          <label>Asset contract</label><span>Nymph</span>
         </p>
         <p>
-          <label>主链</label><span>-</span>
-        </p>
-        <p>
-          <label>主链</label><span>2</span>
+          <label style={{ wordBreak: 'keep-all', width: '113px'}}>Token id</label><span className={styles.elc}>{tid}</span>
         </p>
       </div>
       <div className={styles.line}></div>
@@ -224,41 +225,43 @@ const Qr = () => {
           ))
         }
       </div>
-      {
-        mode === 'mint' && (
-          <Button onClick={_fissionMint} block color='primary' size='large'>
-            Mint
-          </Button>
-        )
-      }
-      {
-        // 可以加入&没有登记过
-        mode === 'sign' && _canSign && !_isSign && (
-          <Button onClick={Sign} block color='primary' size='large'>
-            Sign
-          </Button>
-        )
-      }
-      {
-        // 可以加入&没有登记过
-        mode === 'sign' && _canSign && _isSign && (
-          "您已经登记过了"
-        )
-      }
-      {
-        mode === 'ticket' && caninvite && (
-          <Button onClick={copy} block color='primary' size='large'>
-            Invite
-          </Button>
-        )
-      }
-      {/* {
-        canInvite() && (
-          <div onClick={copy} className={styles.btn}>
-            <img width={200} src={InviteBtn} alt="" />
-          </div>
-        )
-      } */}
+      <div className={styles.footer}>
+        {
+          mode === 'mint' && _mint && (
+            <Button onClick={_fissionMint} block color='primary' size='large'>
+              Mint
+            </Button>
+          )
+        }
+        {
+          // 可以加入&没有登记过
+          mode === 'sign' && _canSign && !_isSign && (
+            <Button onClick={Sign} block color='primary' size='large'>
+              Sign
+            </Button>
+          )
+        }
+        {
+          // 可以加入&没有登记过
+          mode === 'sign' && _canSign && _isSign && (
+            <p className={styles.signTip}>您已经登记过了</p>
+          )
+        }
+        {
+          mode === 'ticket' && caninvite && (
+            <Button onClick={copy} block color='primary' size='large'>
+              Invite
+            </Button>
+          )
+        }
+        {/* {
+          canInvite() && (
+            <div onClick={copy} className={styles.btn}>
+              <img width={200} src={InviteBtn} alt="" />
+            </div>
+          )
+        } */}
+      </div>
       <Dialog
         visible={visible}
         style={{

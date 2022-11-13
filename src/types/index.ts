@@ -10,17 +10,19 @@ export interface Etherabi {
       // 正在举办的会议
       HoldingMeetings?:() => Array<any>;
       // 能否签到
-      CanSign?:(ticketAddress: string,ownerAddress: string) => Boolean;
+      CanSign?:(ownerAddress: string) => Boolean;
 
     // 签到
-    Sign?:(ownerAddress: string) => number;
+    Sign?:(ownerAddress: string) => Promise<number>;
     IsSign?:(ownerAddress: string) => Boolean;
     // 开会时间
     HoldTime?:() => number;
     // 主办方批量给白名单用户mint
     _batchMint?:(whites: string[]) => void;
     // 裂变的mint方法
-    _fissionMint?:(originAddress: string) => void;
+    _fissionMint?:(originAddress: string) => Promise<void>;
     GetValue?: () => number;
     tokenURI?: (id: 0|1) => string;
+    balanceOf?: (address: string) => Promise<number>;
+    owner?: () => Promise<string>;
 }
