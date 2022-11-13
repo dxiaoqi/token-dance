@@ -1,6 +1,7 @@
 .container {
   background-color:  #000000;
   padding: 0px 23px;
+  min-height: 100vh;
   .header {
     padding-top: 52px;
     display: flex;
@@ -122,4 +123,19 @@
     padding-bottom: 46px;
     margin: auto;
   }
+}
+.signTip {
+  color: #FFFFFF;
+  text-align: center;
+}
+.footer {
+  padding-bottom: 20px;
+}
+.elc {
+  word-break: break-all;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block;
 }
