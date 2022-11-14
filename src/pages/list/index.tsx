@@ -22,6 +22,7 @@ function List() {
   const [list, setList] = useState<objType[]>();
 
   const getTickensList = async () => {
+    console.log("Settings.CONTRACT_ADRESS",Settings.CONTRACT_ADRESS);
     const contract = new ethers.Contract(Settings.CONTRACT_ADRESS, IJunoabi, web3Provider);
     const userAddress = user.userInfo.address;
     const holds = await contract.Holds(userAddress);
@@ -42,6 +43,7 @@ function List() {
     const time = await contract?.HoldTime();
     // 获取票的主办者
     const owner = await contract?.owner();
+    console.log("item111",item);
     setList([
       {
         ...data,
@@ -67,7 +69,7 @@ function List() {
       </div>
       <div className={styles.content}>
         {
-          list && list.map((item) => <TickenCard item={item} />)
+          list && list.map((item,index) => <TickenCard item={item} key={index} />)
         }
       </div>
     </div>

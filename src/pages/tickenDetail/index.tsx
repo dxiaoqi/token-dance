@@ -21,11 +21,9 @@ function List() {
     let navigate = useNavigate();
     const user = stores.user;
     let query = useQuery();
-    const tid = query.get("tid");
-    const cid = query.get("cid");
-    const hid = query.get("hid");
     const [tickenDetail,setTickenDetail] = useState<objType>();
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+   
 
     let obj = {
         '主链': '-',
@@ -36,8 +34,14 @@ function List() {
     }
 
     useEffect(()=>{
+        const tid = query.get("tid");
+        const cid = query.get("cid");
+        const hid = query.get("hid");
+        
         const getDetail = async ()=>{
-            const contract = new ethers.Contract(tid as string, INymphabi, web3Provider)
+            const contract = new ethers.Contract(tid as string, INymphabi, web3Provider);
+            console.log("contract",contract);
+            console.log("tid",tid);
             // 获取ticket的ipfs地址
             const ipfsUri = await contract.tokenURI(1);
             // 去获取ticket的源信息
@@ -46,6 +50,7 @@ function List() {
             const time = await contract?.HoldTime();
             // 获取票的主办者
             const owner = await contract?.owner();
+            console.log("data",data);
             setTickenDetail({...data, owner,time});
         }
         getDetail();

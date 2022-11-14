@@ -10,13 +10,12 @@ import stores from '../../store';
 const TickenCard:FC<{item:objType}> = ({item})=> {
     let navigate = useNavigate();
     const user = stores.user;
-    
 
-    const params = { tid: item.tickenAddress, cid: user.userInfo.address, hid:item.owner };
+    const params = { tid: item.tickenAdress, cid: user.userInfo.address, hid:item.owner,mode:'ticket' };
 
     const handleClick = () => {
         navigate({
-            pathname: '/detail',
+            pathname: '/qrcode',
             search: `?${createSearchParams(params)}`,
           });
     }

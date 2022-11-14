@@ -59,3 +59,12 @@ const contract = new ethers.Contract(ticket_address: string, abi: sting[], web3P
     const time = await contract?.HoldTime();
     // 获取票的主办者
     const owner = await contract?.owner();
+
+
+
+### 优化
+- 地址展示
+
+- network name(provider的network拿到）
+
+- 
