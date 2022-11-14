@@ -8,18 +8,18 @@ import { BrowserRouter, HashRouter } from 'react-router-dom';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-// const vConsole = document.createElement('script');
-// vConsole.src = 'https://unpkg.com/vconsole@3.15.0/dist/vconsole.min.js'
+const vConsole = document.createElement('script');
+vConsole.src = 'https://unpkg.com/vconsole@3.15.0/dist/vconsole.min.js'
 
-// const head = document.getElementsByTagName('head');
-// head[0].appendChild(vConsole);
+const head = document.getElementsByTagName('head');
+head[0].appendChild(vConsole);
 
-// vConsole.onload = function() {
-//   const newVConsole = document.createElement('script');
-//   newVConsole.textContent = 'new window.VConsole();'
-//   head[0].appendChild(newVConsole);
+vConsole.onload = function() {
+  const newVConsole = document.createElement('script');
+  newVConsole.textContent = 'new window.VConsole();'
+  head[0].appendChild(newVConsole);
 
-// }
+}
 
 
 root.render(
