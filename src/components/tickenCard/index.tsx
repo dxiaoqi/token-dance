@@ -1,20 +1,33 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import styles from './index.module.scss';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, createSearchParams } from "react-router-dom";
 import icon from '../.././assert/icon.png';
 import whereIcon from '../.././assert/where.png';
 import whenIcon from '../.././assert/when.png';
+import {objType} from "../../types/index";
+import stores from '../../store';
 
-function TickenCard() {
+const TickenCard:FC<{item:objType}> = ({item})=> {
     let navigate = useNavigate();
+    const user = stores.user;
+    
+
+    const params = { tid: item.tickenAddress, cid: user.userInfo.address, hid:item.owner };
+
+    const handleClick = () => {
+        navigate({
+            pathname: '/detail',
+            search: `?${createSearchParams(params)}`,
+          });
+    }
 
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} onClick={handleClick}>
             <div className={styles.header}>
-                <img className={styles.img} src={icon} alt="" />
+                <img className={styles.img} src={item.image} alt="" />
                 <div className={styles.content}>
-                    <div className={styles.title}>TokenDance 2022</div>
+                    <div className={styles.title}>{item.name}</div>
                     <div className={styles.arrow}>{'>'}</div>
                 </div>
             </div>
@@ -22,12 +35,12 @@ function TickenCard() {
                 <div className={styles.where}>
                     <img className={styles.icon} src={whereIcon} alt="whereicon" />
                     <div className={styles.title}>Where</div>
-                    <div className={styles.text}>This is a place</div>
+                    <div className={styles.text}>{item.location}</div>
                 </div>
                 <div className={styles.when}>
-                <img className={styles.icon} src={whenIcon} alt="whenicon" />
+                    <img className={styles.icon} src={whenIcon} alt="whenicon" />
                     <div className={styles.title}>When</div>
-                    <div className={styles.text}>2022-12-12 14:00:00</div>
+                    <div className={styles.text}>{item.time._hex}</div>
                 </div>
             </div>
         </div>

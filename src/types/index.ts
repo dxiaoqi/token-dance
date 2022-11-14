@@ -26,3 +26,18 @@ export interface Etherabi {
     balanceOf?: (address: string) => Promise<number>;
     owner?: () => Promise<string>;
 }
+
+
+export interface objType {
+  description: string;
+  external_url: string;
+  image: string;
+  location: string;
+  name: string;
+  time: {
+    _hex: string;
+    _isBigNumber: boolean;
+  };
+  owner: string;
+  tickenAddress: string;
+};

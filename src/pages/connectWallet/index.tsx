@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import stores from '../../store';
 import { initProvide } from '../../utils/ether';
 import { useNavigate } from "react-router-dom";
+import { Toast } from 'antd-mobile';
 
 function ConnectWallet() {
     let navigate = useNavigate();
@@ -18,7 +19,10 @@ function ConnectWallet() {
                 navigate("/list"); 
             }
         }).catch((err)=>{
-            console.log("please install metamask");
+            Toast.show({
+                icon: 'fail',
+                content: '请安装metamask钱包',
+              })
         })
     };
 

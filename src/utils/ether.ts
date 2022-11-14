@@ -2,34 +2,57 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { ethers } from 'ethers';
 import config from '../config/app'
 // 会议abi
-let IJunoabi = [
-  `function HoldMeeting(
-    string calldata name,
-    string calldata symbol,
-    string calldata metaInfoURL,
-    uint8 templateType,
-    uint value
-) external returns (address)`, // 举办会议
-  "function Holds(address host) external view returns (address[] memory);", // 某人举办的会议
-  "function Meetings(address host) external view returns (address[] memory)", // 某人参加的会议
-  "function HoldingMeetings() external view returns (address[] memory)", // 正在举办的会议
-  "function _addTestUser(address) external" // 添加白名单用户
+// export const IJunoabi = [
+//   `function HoldMeeting(
+//     string calldata name,
+//     string calldata symbol,
+//     string calldata metaInfoURL,
+//     uint8 templateType,
+//     uint value
+// ) external returns (address)`, // 举办会议
+//   "function Holds(address host) external view returns (address[] memory);", // 某人举办的会议
+//   "function Meetings(address host) external view returns (address[] memory)", // 某人参加的会议
+//   "function HoldingMeetings() external view returns (address[] memory)", // 正在举办的会议
+//   "function _addTestUser(address) external" // 添加白名单用户
+// ];
+
+export const IJunoabi = [
+  "function HoldMeeting(string,string,string,uint8,uint256) returns (address)",
+  "function HoldingMeetings() view returns (address[])",
+  "function Holds(address) view returns (address[])",
+  "function Meetings(address) view returns (address[])",
+  "function _addTestUser(address)"
 ];
 
+
 export const INymphabi = [
-  "function Sign(address ownerAddress) external", // 签到
-  "function IsSign(address ownerAddress) external view returns (bool)", // 是否签到
-  "function HoldTime() external view returns (uint256)", //开会时间
-  "function _batchMint(address[] calldata whites) external payable", // 批量开白
-  "function _fissionMint(address originAddress) external payable", // 接受邀请
-  "function TemplateType() external view returns (uint8)", //模板类型
-  "function CanInvite() view returns (bool)", //能否邀请
-  "function CanSign(address ownerAddress) external view returns (bool)", // 能否签到
-  "function GetValue() external view returns (uint256)", // 返回票价
-  "function tokenURI(uint256) view returns (string)", // 获取票地址
-  "function balanceOf(address) view returns (uint256)", // 是否有票
-  "function owner() view returns (address)"
+  "event Approval(address indexed,address indexed,uint256 indexed)",
+  "event ApprovalForAll(address indexed,address indexed,bool)",
+  "event Transfer(address indexed,address indexed,uint256 indexed)",
+  "function CanInvite() view returns (bool)",
+  "function CanSign(address) view returns (bool)",
+  "function GetValue() view returns (uint256)",
+  "function HoldTime() view returns (uint256)",
+  "function InvitedPeople() view returns (address[])",
+  "function IsSign(address) view returns (bool)",
+  "function Sign(address)",
+  "function TemplateType() view returns (uint8)",
+  "function _batchMint(address[]) payable",
+  "function _fissionMint(address) payable",
+  "function approve(address,uint256)",
+  "function balanceOf(address) view returns (uint256)",
+  "function getApproved(uint256) view returns (address)",
+  "function isApprovedForAll(address,address) view returns (bool)",
+  "function ownerOf(uint256) view returns (address)",
+  "function owner() view returns (address)",
+  "function safeTransferFrom(address,address,uint256)",
+  "function safeTransferFrom(address,address,uint256,bytes)",
+  "function setApprovalForAll(address,bool)",
+  "function tokenURI(uint256) view returns (string)",
+  "function supportsInterface(bytes4) view returns (bool)",
+  "function transferFrom(address,address,uint256)"
 ]
+
 
 export const initProvide = async () => {
   // 初始化合约
@@ -44,9 +67,9 @@ export const initProvide = async () => {
   }
 }
 
-export const handleAddress = (address:string)=>{
+export const handleAddress = (address: string) => {
   let s = address.slice(0, 6);
-  let e = address.slice(address.length-5);
+  let e = address.slice(address.length - 5);
   return (s + "....." + e);
 }
 
