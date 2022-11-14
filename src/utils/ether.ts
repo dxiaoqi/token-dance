@@ -17,7 +17,7 @@ import config from '../config/app'
 // ];
 
 export const IJunoabi = [
-  "function HoldMeeting(string,string,string,uint8,uint256) returns (address)",
+  "function HoldMeeting(string,string,string,uint256,uint256,uint8,uint256) returns (address)",
   "function HoldingMeetings() view returns (address[])",
   "function Holds(address) view returns (address[])",
   "function Meetings(address) view returns (address[])",

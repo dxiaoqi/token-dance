@@ -63,8 +63,11 @@ const contract = new ethers.Contract(ticket_address: string, abi: sting[], web3P
 
 
 ### 优化
+
+> Abdulla 
+
 - 地址展示
 
-- network name(provider的network拿到）
+- 盖章
 
-- 
+- 列表不能只展示一个

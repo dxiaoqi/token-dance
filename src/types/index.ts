@@ -39,5 +39,5 @@ export interface objType {
     _isBigNumber: boolean;
   };
   owner: string;
-  tickenAddress: string;
+  tickenAdress: string;
 };
