@@ -7,27 +7,36 @@ import {
   ImageUploader,
   TextArea,
   DatePicker,
+  Mask,
   Picker,
   Radio,
   Selector,
   Slider,
   Space,
+  SpinLoading,
   Stepper,
   Switch,
   Checkbox
 } from 'antd-mobile'
 import { NFTStorage } from 'nft.storage'
+import { BigNumber, ethers } from 'ethers';
 import dayjs from 'dayjs'
 import styles from './index.module.scss';
 import ImageCrop from './imageCrop';
 import type { DatePickerRef } from 'antd-mobile/es/components/date-picker'
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
+import { IJunoabi, INymphabi } from '../../utils/ether';
+import { Etherabi } from '../../types/index'
+import config from '../../config/app'
+
 
 const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJERDdDNDljMzRjN0IxMDVGNDdDNzA0MDI3YTRkZDhBNEU3MzdiMDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODA2OTU4NDE1MCwibmFtZSI6InRva2VuLWRhbmNlLWlwZnMta2V5In0.7D7Ea8v2FqTHNxa_4AQA-VEzsGdPbvjvtiQF8Squ5Kk'
 const client = new NFTStorage({ token: NFT_STORAGE_TOKEN })
 let uploading = false;
-let cropperBlob = '';
-const CreateToken = () => {
+let cropperBlob: Blob;
+let fileName = '';
+let fileType = '';
+const CreateTicket = () => {
   const [cropperUrl, setCropperUrl] = useState<string>('');
   const [fileList, setFileList] = useState<ImageUploadItem[]>([
     // {
@@ -35,31 +44,13 @@ const CreateToken = () => {
     // }
   ])
   const [showCropper, setShowCropper] = useState<Boolean>(false);
+  const [showLoading, setShowLoading] = useState<Boolean>(false);
   const ref = useRef<HTMLDivElement>(null)
 
   const confirmCb = function(blob: Blob) {
     setShowCropper(false);
-    const reader = new FileReader();
-    reader.onload = function(e: ProgressEvent<FileReader>) {
-      const target = e?.target;
-      uploading = false;
-      if(target?.result) {
-        cropperBlob = target.result as string;
-        // debugger
-        // setFileList([{
-        //   url: target.result as string
-        // }])
-      }
-      console.log('onload', e?.target);
-    }
-    const dataUrl = reader.readAsDataURL(blob);
-    return false;
-    console.log('dataUrl: ' + dataUrl);
-    debugger
-    // setFileList([{
-      // url: dataUrl
-    // }])
-    console.log('blob', blob, URL.createObjectURL(blob));
+    cropperBlob = blob;
+    uploading = false;
   }
 
   async function sleep(time: number) {
@@ -69,22 +60,39 @@ const CreateToken = () => {
   }
   async function uploadFun(file: File) {
     console.log('file', file)
+    fileName = file.name;
+    fileType = file.type;
     const url = URL.createObjectURL(file);
     setCropperUrl(url);
     setShowCropper(true);
     uploading = true;
     await new Promise<void>((resolve, reject) => {
-      setInterval(() => {
+      const interval = setInterval(() => {
         if(!uploading) {
+          clearInterval(interval);
           resolve();
         }
       }, 100)
     })
 
-    return {url: cropperBlob}
+    const newFile = new File([cropperBlob], fileName, {type: fileType})
+    const newUrl = URL.createObjectURL(newFile);
+
+    return {url: newUrl}
     // const fileBlobData = new Blob([file]);
+    // https://bafkreihsilbagqicdvsm6uwnejahe6fmvsuqarzbkhhzdf3ccc2jelkmcq.ipfs.nftstorage.link/
+    // const fileBlobData = cropperBlob;
+    // const newFile = new File([cropperBlob], fileName, {type: fileType})
+    // console.log('newFile', newFile)
     // const cid = await client.storeBlob(fileBlobData);
+    // const metadata = await client.store({
+    //   name: 'My sweet NFT',
+    //   description: 'Just try to funge it. You can\'t do it.',
+    //   image: newFile
+    // })
+    // debugger
     // return {url: `https://${cid}.ipfs.nftstorage.link/`}
+    // return {url: ''}
   }
   async function mockUpload(file: File) {
     console.log('uploading')
@@ -98,12 +106,53 @@ const CreateToken = () => {
     await sleep(3000)
     throw new Error('Fail to upload')
   }
-  
-  useEffect(() => {
-    console.log((window as any).QrCode)
-  }, [])
-  const onFinish = (values: Object) => {
+
+  const onFinish = async (values: any) => {
+    setShowLoading(true);
     console.log('finish', values)
+    console.log(values.time, Math.floor(values.time.getTime() / 100))
+    console.log('fileType', fileType);
+    console.log('cropperBlob',cropperBlob, cropperBlob.size, cropperBlob.type);
+    const newFile = new File([cropperBlob], fileName, {type: fileType})
+    console.log('newFile', newFile)
+    const metadata = await client.store({
+      name: values.title,
+      description: values.detail || '',
+      image: newFile,
+      location: values.address,
+    })
+    console.log('metadata:', metadata)
+    if(metadata.ipnft) {
+      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts =await  web3Provider.send("eth_requestAccounts", []);
+      let signer = web3Provider.getSigner();
+      // 0x3dea2B63093956728D72438c4cC0ED8386b98cA0
+      const contract = new ethers.Contract('0x3dea2B63093956728D72438c4cC0ED8386b98cA0', IJunoabi, signer);
+      // 会议名，会议缩写，metadata url，举办时间（秒级时间戳），人数限制，会议类型，票价
+
+      const holdMeetingResp = await contract?.HoldMeeting(
+        values.title,
+        values.shortTitle || '',
+        `https://${metadata.ipnft}.ipfs.nftstorage.link/metadata.json`,
+        Math.floor(values.time.getTime() / 1000),
+        parseInt(values.maxInvite),
+        parseInt(values.type),
+        parseInt(values.price)
+      );
+      console.log('holdMeetingResp', holdMeetingResp);
+      const holdResult = await holdMeetingResp.wait().catch((e: Error) => e);
+      setShowLoading(false);
+      if(holdResult.status !== undefined) {
+        // success
+      } else {
+        // failed
+      }
+      // const event = holdResult.events.find((event: any) => event.event as string === "NewMeeting");
+      console.log('event', holdResult);
+      // const [from, ticketAddress] = event.args;
+      // console.log(from, ticketAddress);
+    }
+
   }
   return (
     <div className={styles.container} ref={ref}>
@@ -128,14 +177,14 @@ const CreateToken = () => {
           label='上传票面图片（尺寸为）'
           rules={[
             {
-              // required: true,
+              required: true,
               message: '请上传票面图片'
             }
           ]}
         >
           <ImageUploader
             value={fileList}
-            // onChange={setFileList}
+            onChange={setFileList}
             upload={uploadFun}
             maxCount={1}
             imageFit="contain"
@@ -146,7 +195,7 @@ const CreateToken = () => {
         </Form.Item>
 
         <Form.Item
-          name='birthday'
+          name='time'
           label='会议时间'
           trigger='onConfirm'
           onClick={(e, datePickerRef: RefObject<DatePickerRef>) => {
@@ -203,10 +252,10 @@ const CreateToken = () => {
         >
             <Radio.Group>
               <Space direction='vertical'>
-                <Radio value='0'>普通会议</Radio>
-                <Radio value='1'>裂变会议</Radio>
-                <Radio value='2'>秘密会议</Radio>
-                <Radio value='3'>邀请会议</Radio>
+                <Radio value='1'>普通会议</Radio>
+                <Radio value='2'>裂变会议</Radio>
+                <Radio value='3'>秘密会议</Radio>
+                <Radio value='4'>邀请会议</Radio>
               </Space>
             </Radio.Group>
         </Form.Item>
@@ -219,6 +268,10 @@ const CreateToken = () => {
                 return Number(value);
               },
               message: "请输入0以上的整数"
+            },
+            {
+              required: true,
+              message: '请输入0以上的整数'
             }
           ]}
           name='price'
@@ -235,6 +288,10 @@ const CreateToken = () => {
                 return Number(value);
               },
               message: "请输入0以上的整数"
+            },
+            {
+              required: true,
+              message: '请输入0以上的整数'
             }
           ]}
           name='maxInvite'
@@ -244,7 +301,12 @@ const CreateToken = () => {
         </Form.Item>
       </Form>
       {showCropper ? <ImageCrop confirmCb={confirmCb} url={cropperUrl}></ImageCrop> : null}
+      {showLoading ? <Mask>
+        <div className={styles.loadingBox}>
+          <SpinLoading  style={{ '--size': '48px', alignSelf: 'center' }} ></SpinLoading>
+        </div>
+      </Mask> : null}
     </div>)
 }
 
-export default CreateToken;
+export default CreateTicket;

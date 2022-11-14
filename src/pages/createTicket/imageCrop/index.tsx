@@ -1,5 +1,6 @@
 import { useEffect, useRef, RefObject, useState } from 'react';
 import {
+  Button,
   Mask
 } from 'antd-mobile'
 import Cropper from 'cropperjs';
@@ -51,20 +52,18 @@ const ImageCrop = (props: ImageCropProps) => {
       const test = cropper.getCroppedCanvas({
         width: 100,
         height: 100,
-        minWidth: 100,
-        minHeight: 100,
-        maxWidth: 100,
-        maxHeight: 100,
+        // minWidth: 100,
+        // minHeight: 100,
+        // maxWidth: 100,
+        // maxHeight: 100,
         fillColor: '#fff',
         imageSmoothingEnabled: false,
         imageSmoothingQuality: 'high',
 
       })
-      console.log('test', test);
-      debugger
-      // .toBlob((blob) => {
-      //   confirmCb(blob);
-      // })
+      .toBlob((blob) => {
+        confirmCb(blob);
+      })
     }
   }
   return (
@@ -84,7 +83,12 @@ const ImageCrop = (props: ImageCropProps) => {
         <div
           className={styles.button}
           onClick={() => confirmClick(cropper)}
-        >确定</div>
+        >
+          <Button  block color='primary' size='large'>
+            确定
+          </Button>
+          
+        </div>
       </div>
     </Mask>
   )
