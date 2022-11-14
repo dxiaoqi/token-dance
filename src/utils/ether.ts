@@ -2,19 +2,35 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { ethers } from 'ethers';
 import config from '../config/app'
 // 会议abi
-let IJunoabi = [
+export const IJunoabi = [
+  // 会议名，会议缩写，metadata url，举办时间（秒级时间戳），人数限制，会议类型，票价
   `function HoldMeeting(
-    string calldata name,
-    string calldata symbol,
-    string calldata metaInfoURL,
-    uint8 templateType,
-    uint value
-) external returns (address)`, // 举办会议
-  "function Holds(address host) external view returns (address[] memory);", // 某人举办的会议
-  "function Meetings(address host) external view returns (address[] memory)", // 某人参加的会议
-  "function HoldingMeetings() external view returns (address[] memory)", // 正在举办的会议
-  "function _addTestUser(address) external" // 添加白名单用户
-];
+    string,
+    string,
+    string,
+    uint256,
+    uint256,
+    uint8,
+    uint256
+    ) returns (address)`,
+  "function HoldingMeetings() view returns (address[])",
+  "function Holds(address) view returns (address[])",
+  "function Meetings(address) view returns (address[])",
+  "function _addTestUser(address)"
+]
+// let IJunoabi = [
+//   `function HoldMeeting(
+//     string calldata name,
+//     string calldata symbol,
+//     string calldata metaInfoURL,
+//     uint8 templateType,
+//     uint value
+// ) external returns (address)`, // 举办会议
+//   "function Holds(address host) external view returns (address[] memory);", // 某人举办的会议
+//   "function Meetings(address host) external view returns (address[] memory)", // 某人参加的会议
+//   "function HoldingMeetings() external view returns (address[] memory)", // 正在举办的会议
+//   "function _addTestUser(address) external" // 添加白名单用户
+// ];
 
 export const INymphabi = [
   "function Sign(address ownerAddress) external", // 签到

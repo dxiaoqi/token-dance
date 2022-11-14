@@ -16,6 +16,13 @@
       word-wrap: break-word;
     }
   }
+  .loadingBox {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .meetInfo {
     margin-top: 20px;
     background: #1F2930;
