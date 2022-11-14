@@ -15,7 +15,7 @@ import { initProvide, INymphabi } from '../../utils/ether';
 import { BigNumber, ethers } from 'ethers';
 import axios from 'axios';
 import dayjs from 'dayjs';
-
+import { useNavigate } from "react-router-dom";
 interface TicketInfo {
   description: string, 
   external_url: string, 
@@ -45,7 +45,7 @@ const Qr = () => {
   const [_isSign, setIsSign] = useState(false);
 
   const [_mint, setCanMint] = useState(false);
-
+  let navigate = useNavigate();
   const gen = () => {
     setVisible(true);
     // cid 参赛人的id
@@ -120,6 +120,7 @@ const Qr = () => {
       })
       setTimeout(() => {
         // 跳转首页
+        navigate("/list"); 
       }, 3000)
     }).catch((err: any) => {
       Toast.show({
@@ -130,6 +131,13 @@ const Qr = () => {
 
   }
   const initTicket = async () => {
+    if (!window.ethereum) {
+      Toast.show({
+        icon: 'error',
+        content: 'Please install MetaMask!'
+      })
+      return;
+    }
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
     const accounts =await  web3Provider.send("eth_requestAccounts", []);
     console.log(accounts)
