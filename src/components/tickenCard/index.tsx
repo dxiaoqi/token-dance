@@ -6,8 +6,10 @@ import whereIcon from '../.././assert/where.png';
 import whenIcon from '../.././assert/when.png';
 import {objType} from "../../types/index";
 import stores from '../../store';
+import { url } from 'node:inspector';
 
 const TickenCard:FC<{item:objType}> = ({item})=> {
+    console.log("item",item);
     let navigate = useNavigate();
     const user = stores.user;
 
@@ -24,7 +26,7 @@ const TickenCard:FC<{item:objType}> = ({item})=> {
     return (
         <div className={styles.container} onClick={handleClick}>
             <div className={styles.header}>
-                <img className={styles.img} src={item.image} alt="" />
+                <div className={styles.img} style={{   backgroundImage: `url(${item.image})` }}></div>
                 <div className={styles.content}>
                     <div className={styles.title}>{item.name}</div>
                     <div className={styles.arrow}>{'>'}</div>

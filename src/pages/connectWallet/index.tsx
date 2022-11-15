@@ -16,6 +16,7 @@ function ConnectWallet() {
             if (web3Provider) {
                 const accounts =await  web3Provider.send("eth_requestAccounts", []);
                 user.setUser({ address: accounts[0] });
+                localStorage.setItem("walletAddress", accounts[0]);
                 navigate("/list"); 
             }
         }).catch((err)=>{

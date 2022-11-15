@@ -66,7 +66,8 @@ const contract = new ethers.Contract(ticket_address: string, abi: sting[], web3P
 
 > Abdulla 
 
-- 地址展示
+--- 地址展示
+-- 图片展示
 
 - 盖章
 

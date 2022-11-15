@@ -12,7 +12,8 @@ import Settings from '../../config/app';
 import axios from 'axios';
 import { resolve } from 'node:path/win32';
 import { objType } from "../../types/index";
-
+import InviteAvatar from '../../assert/invite_avatar.png';
+import Avatar from '../../assert/invite-avatar.png';
 
 function List() {
   let navigate = useNavigate();
@@ -22,38 +23,35 @@ function List() {
   const [list, setList] = useState<objType[]>();
 
   const getTickensList = async () => {
-    console.log("Settings.CONTRACT_ADRESS",Settings.CONTRACT_ADRESS);
     const contract = new ethers.Contract(Settings.CONTRACT_ADRESS, IJunoabi, web3Provider);
-    const userAddress = user.userInfo.address;
+    const userAddress = user.userInfo.address || localStorage.getItem('walletAddress');
     const holds = await contract.Holds(userAddress);
     const meetings = await contract.Meetings(userAddress);
     uniqueMeetings = unitAndunique(holds, meetings);
-    getTicken();
+    getTicken(uniqueMeetings);
   };
 
-  const getTicken = async () => {
-    const item = uniqueMeetings[0];
-    // 创建票据合约  => INymphabi => 创建了票据的链接
-    const contract = new ethers.Contract(item, INymphabi, web3Provider)
-    // 获取ticket的ipfs地址
-    const ipfsUri = await contract.tokenURI(1);
-    // 去获取ticket的源信息
-    const { data } = await axios.get(ipfsUri);
-    // 获取ticket的举办时间
-    const time = await contract?.HoldTime();
-    // 获取票的主办者
-    const owner = await contract?.owner();
-    console.log("item111",item);
-    setList([
-      {
+  const getTicken = async (arr: string[]) => {
+    const dataArr: objType[] = [];
+    for (let item of arr) {
+      const contract = new ethers.Contract(item, INymphabi, web3Provider)
+      // 获取ticket的ipfs地址
+      const ipfsUri = await contract.tokenURI(1);
+      // 去获取ticket的源信息
+      const { data } = await axios.get(ipfsUri);
+      // 获取ticket的举办时间
+      const time = await contract?.HoldTime();
+      // 获取票的主办者
+      const owner = await contract?.owner();
+      dataArr.push({
         ...data,
         time,
         owner,
         tickenAdress: item
-      }
-    ])
+      })
+    }
+    setList(dataArr);
   }
-
 
 
   useEffect(() => {
@@ -64,12 +62,15 @@ function List() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <img src={icon} alt="avatar" />
-        <div className={styles.address}>{handleAddress(user.userInfo.address)}</div>
+        <div className={styles.avatar}>
+          <img src={InviteAvatar} alt="" />
+          <img src={Avatar} alt="" />
+        </div>
+        {user.userInfo.address ? <div className={styles.address}>{handleAddress(user.userInfo.address)}</div> : <div className={styles.address}>{handleAddress(localStorage.getItem("walletAddress") as string)}</div>}
       </div>
       <div className={styles.content}>
         {
-          list && list.map((item,index) => <TickenCard item={item} key={index} />)
+          list && list.map((item, index) => <TickenCard item={item} key={index} />)
         }
       </div>
     </div>
