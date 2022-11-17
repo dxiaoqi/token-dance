@@ -172,8 +172,11 @@ const Qr = () => {
   }
   useEffect(() => {
     // 链接钱包地址，根据当前用户拉票据信息
-    initTicket();
-    getSignStatus();
+    async function _init() {
+      await initTicket();
+      getSignStatus();
+    }
+    _init();
   }, [])
 
   const getSignStatus = async () => {
