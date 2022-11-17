@@ -45,6 +45,7 @@ const Qr = () => {
   const [_isSign, setIsSign] = useState(false);
 
   const [_mint, setCanMint] = useState(false);
+
   let navigate = useNavigate();
   const gen = () => {
     setVisible(true);
@@ -88,20 +89,22 @@ const Qr = () => {
     // return IsSign 参赛者id
     const can = await req?.IsSign?.(cid);
     setIsSign(can as boolean);
+    return can;
   }
   const Sign =() => {
     // 验证 Sign(cid)
     signer?.Sign?.(cid).then((d: number) => {
       Toast.show({
         icon: 'success',
-        content: '验证成功',
+        content: 'Verification success',
       })
-      localStorage.setItem(`${cid}-${tid}`.toString().toLowerCase(), "true")
+      localStorage.setItem(`${cid}-${tid}`.toString().toLowerCase(), "true");
+      setIsSign(true);
     }).catch((err: any) => {
       console.log(err);
       Toast.show({
         icon: 'error',
-        content: '验证失败'
+        content: 'Verification failure'
       })
     })
   }
@@ -116,7 +119,7 @@ const Qr = () => {
     signer?._fissionMint?.(hid).then(() => {
       Toast.show({
         icon: 'success',
-        content: '加入成功，3s中后跳转首页',
+        content: 'Join successfully, jump to the homepage after 3s',
       })
       setTimeout(() => {
         // 跳转首页
@@ -154,6 +157,7 @@ const Qr = () => {
     const time = await contract?.HoldTime();
     // 获取票的主办者
     const owner = await contract?.owner();
+    console.log(data)
     setInfo({
       ...data,
       time,
@@ -169,10 +173,21 @@ const Qr = () => {
   useEffect(() => {
     // 链接钱包地址，根据当前用户拉票据信息
     initTicket();
+    getSignStatus();
   }, [])
+
+  const getSignStatus = async () => {
+    if (mode === 'ticket' && !_isSign) {
+      let res = await isSign();
+      if (!res) {
+        getSignStatus();
+      }
+    }
+  }
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+        {_isSign && <div className={styles.written}>written off</div>}
         <img width={100} height={100} src={Icon} alt="" />
         <div>
           <div className={styles.title}><h1>{info?.name || "Token Dance"}</h1> 
@@ -220,24 +235,34 @@ const Qr = () => {
         <p>
           <label style={{ wordBreak: 'keep-all', width: '113px'}}>Token id</label><span className={styles.elc}>{tid}</span>
         </p>
-      </div>
-      <div className={styles.line}></div>
-
-      <div className={styles.invite}>
         {
-          [11,22].map(e => (
-            <div className={styles.avatar}>
-              <img src={InviteAvatar} alt="" />
-              <img src={Avatar} alt="" />
-            </div>
-          ))
+          mode === 'sign' && (
+            <p>
+              <label style={{ wordBreak: 'keep-all', width: '113px'}}>User id</label><span className={styles.elc}>{cid}</span>
+            </p>
+          )
         }
       </div>
+      <div className={styles.line}></div>
+      {
+        mode === 'ticket' && (
+          <div className={styles.invite}>
+            {
+              [11,22].map(e => (
+                <div className={styles.avatar}>
+                  <img src={InviteAvatar} alt="" />
+                  <img src={Avatar} alt="" />
+                </div>
+              ))
+            }
+          </div>
+        )
+      }
       <div className={styles.footer}>
         {
           mode === 'mint' && _mint && (
             <Button onClick={_fissionMint} block color='primary' size='large'>
-              Mint
+              Get it
             </Button>
           )
         }
@@ -245,14 +270,14 @@ const Qr = () => {
           // 可以加入&没有登记过
           mode === 'sign' && _canSign && !_isSign && (
             <Button onClick={Sign} block color='primary' size='large'>
-              Sign
+              Write off
             </Button>
           )
         }
         {
           // 可以加入&没有登记过
           mode === 'sign' && _canSign && _isSign && (
-            <p className={styles.signTip}>您已经登记过了</p>
+            <p className={styles.signTip}>The other party has already registered</p>
           )
         }
         {

@@ -24,7 +24,7 @@ interface RouterConfig {
 // 主路由
 export const mainRouteConfig = [
     {
-        path: "/", title: "首页", component: App,
+        path: "/", title: "TokenDance 2022", component: App,
         children: []
     },
     {
