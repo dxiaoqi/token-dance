@@ -32,7 +32,6 @@ import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
 import { IJunoabi, INymphabi } from '../../utils/ether';
 import { Etherabi } from '../../types/index'
 import config from '../../config/app'
-import { useNavigate } from 'react-router-dom';
 
 
 const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJERDdDNDljMzRjN0IxMDVGNDdDNzA0MDI3YTRkZDhBNEU3MzdiMDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODA2OTU4NDE1MCwibmFtZSI6InRva2VuLWRhbmNlLWlwZnMta2V5In0.7D7Ea8v2FqTHNxa_4AQA-VEzsGdPbvjvtiQF8Squ5Kk'
@@ -49,7 +48,6 @@ const CreateTicket = () => {
   const [showCropper, setShowCropper] = useState<Boolean>(false);
   const [showLoading, setShowLoading] = useState<Boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   const confirmCb = function(blob: Blob) {
     setShowCropper(false);
