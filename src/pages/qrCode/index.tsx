@@ -142,13 +142,11 @@ const Qr = () => {
       return;
     }
     const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts =await  web3Provider.send("eth_requestAccounts", []);
-    console.log(accounts)
     const contract = new ethers.Contract((tid || '')?.toString(), INymphabi, web3Provider);
     req = contract as unknown as Etherabi;
     signer = web3Provider.getSigner();
     signer = contract.connect(signer);
-
+    
     // 获取ticket的ipfs地址
     const ipfsUri = await contract?.tokenURI?.(1)
     // 去获取ticket的源信息
@@ -163,6 +161,8 @@ const Qr = () => {
       time,
       owner
     })
+    const accounts =await  web3Provider.send("eth_requestAccounts", []);
+    console.log(accounts)
     uid = accounts?.[0];
     await canInvite();
     await canSign();
