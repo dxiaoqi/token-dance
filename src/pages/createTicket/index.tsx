@@ -119,6 +119,7 @@ const CreateTicket = () => {
     }).catch((e: Error) => e);
     console.log('metadata:', metadata)
     setCreatePercent(50);
+    // @ts-ignore
     if(!metadata.ipnft) {
       return createFailed();
     }
@@ -133,6 +134,7 @@ const CreateTicket = () => {
     const holdMeetingResp = await contract?.HoldMeeting(
       values.title,
       values.shortTitle || '',
+      // @ts-ignore
       `https://${metadata.ipnft}.ipfs.nftstorage.link/metadata.json`,
       Math.floor(values.time.getTime() / 1000),
       Number(values.maxInvite),
