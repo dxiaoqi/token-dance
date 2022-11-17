@@ -32,7 +32,7 @@ export const mainRouteConfig = [
         children: []
     },
     {
-        path: 'scancode', title: "二维码扫描", component: Scancode,
+        path: '/scancode', title: "二维码扫描", component: Scancode,
     },
     {
         path: 'createticket', title: "新门票", component: CreateTicket,
@@ -52,7 +52,7 @@ export const mainRouteConfig = [
         path: "/detail", title: "点开票", component: TickenDetail,
         children: [],
     },{
-        path: 'invite', title: '邀请', component: Invite,
+        path: '/invite', title: '邀请', component: Invite,
         children: [],
     }
 ];
