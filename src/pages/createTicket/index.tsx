@@ -32,6 +32,7 @@ import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
 import { IJunoabi, INymphabi } from '../../utils/ether';
 import { Etherabi } from '../../types/index'
 import config from '../../config/app'
+import { useNavigate } from 'react-router-dom';
 
 
 const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJERDdDNDljMzRjN0IxMDVGNDdDNzA0MDI3YTRkZDhBNEU3MzdiMDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODA2OTU4NDE1MCwibmFtZSI6InRva2VuLWRhbmNlLWlwZnMta2V5In0.7D7Ea8v2FqTHNxa_4AQA-VEzsGdPbvjvtiQF8Squ5Kk'
@@ -41,6 +42,7 @@ let cropperBlob: Blob;
 let fileName = '';
 let fileType = '';
 const CreateTicket = () => {
+  const navigate = useNavigate();
   const [createPercent, setCreatePercent] = useState(0);
   const [cropperUrl, setCropperUrl] = useState<string>('');
   const [fileList, setFileList] = useState<ImageUploadItem[]>([])
@@ -59,7 +61,7 @@ const CreateTicket = () => {
     setShowLoading(false);
     Toast.show({
       icon: 'success',
-      content: '创建成功',
+      content: 'created successfully',
     })
     setTimeout(() => {
         navigate({
@@ -72,14 +74,14 @@ const CreateTicket = () => {
     setShowLoading(false);
     Toast.show({
       icon: 'fail',
-      content: '创建失败',
+      content: 'Creation failed',
     })
   }
 
   const inputError = function() {
     Toast.show({
       icon: 'fail',
-      content: '请正确填写消息',
+      content: 'Please fill in the message correctly',
     })
   }
   async function uploadFun(file: File) {
@@ -155,6 +157,7 @@ const CreateTicket = () => {
     setShowLoading(false);
     if(holdResult.status !== undefined) {
       // success
+      navigate("/list"); 
       createSuccess();
     } else {
       // failed
@@ -174,24 +177,24 @@ const CreateTicket = () => {
         onFinishFailed={inputError}
         footer={
           <Button block type='submit' color='primary' size='large'>
-            提交
+            Submit
           </Button>
         }
       >
-        <Form.Header>请填写票的使用规则</Form.Header>
-        <Form.Item name='title' label='会议标题' rules={[{ required: true }]}>
+        <Form.Header>Please fill in the usage rules of the ticket</Form.Header>
+        <Form.Item name='title' label='Title' rules={[{ required: true }]}>
           <Input placeholder='' />
         </Form.Item>
-        <Form.Item name='shortTitle' label='会议缩写'>
+        <Form.Item name='shortTitle' label='symbol'>
           <Input placeholder='' />
         </Form.Item>
         <Form.Item
           name='image'
-          label='上传票面图片（尺寸为）'
+          label='Upload Image'
           rules={[
             {
               required: true,
-              message: '请上传票面图片'
+              message: 'Please upload a face picture'
             }
           ]}
         >
@@ -209,7 +212,7 @@ const CreateTicket = () => {
 
         <Form.Item
           name='time'
-          label='会议时间'
+          label='Time'
           trigger='onConfirm'
           onClick={(e, datePickerRef: RefObject<DatePickerRef>) => {
             datePickerRef.current?.open()
@@ -217,7 +220,7 @@ const CreateTicket = () => {
           rules={[
             {
               required: true,
-              message: '请选择会议时间'
+              message: 'Please select a meeting time'
             }
           ]}
         >
@@ -232,11 +235,11 @@ const CreateTicket = () => {
         </Form.Item>
         <Form.Item
           name='address'
-          label='会议地点'
+          label='Location'
           rules={[
             {
               required: true,
-              message: '请输入会议地点'
+              message: 'Please enter meeting location'
             }
           ]}
         >
@@ -244,7 +247,7 @@ const CreateTicket = () => {
         </Form.Item>
         <Form.Item
           name='detail'
-          label='会议描述'
+          label='Description'
           
         >
           <TextArea
@@ -255,20 +258,20 @@ const CreateTicket = () => {
         </Form.Item>
         <Form.Item
           name='type'
-          label='选择会议类型'
+          label='Select your activite type'
           rules={[
             {
               required: true,
-              message: '请选择会议类型'
+              message: 'Please select a meeting type'
             }
           ]}
         >
             <Radio.Group>
               <Space direction='vertical'>
-                <Radio value='1'>普通会议</Radio>
-                <Radio value='2'>裂变会议</Radio>
-                <Radio value='3'>秘密会议</Radio>
-                <Radio value='4'>邀请会议</Radio>
+                <Radio value='1'>ordinary</Radio>
+                <Radio value='2'>fission</Radio>
+                <Radio value='3'>secret</Radio>
+                <Radio value='4'>invite</Radio>
               </Space>
             </Radio.Group>
         </Form.Item>
@@ -281,13 +284,13 @@ const CreateTicket = () => {
               transform(value) {
                 return Number(value);
               },
-              message: "请输入0以上的整数"
+              message: "Enter an integer greater than 0"
             }
           ]}
           name='price'
-          label='票价设置'
+          label='fare'
         >
-          <Input placeholder='请输入0以上的整数' type="integer"  />
+          <Input placeholder='Enter an integer greater than 0' type="integer"  />
         </Form.Item>
         <Form.Item
           required
@@ -298,13 +301,13 @@ const CreateTicket = () => {
               transform(value) {
                 return Number(value);
               },
-              message: "请输入0以上的整数"
+              message: "请Enter an integer greater than 0"
             }
           ]}
           name='maxInvite'
-          label='会议总人数上限'
+          label='total number of people'
         >
-          <Input placeholder='请输入最大邀请人数' type="integer"  />
+          <Input placeholder='Please enter the maximum number of invitees' type="integer"  />
         </Form.Item>
       </Form>
       {showCropper ? <ImageCrop confirmCb={confirmCb} url={cropperUrl}></ImageCrop> : null}
