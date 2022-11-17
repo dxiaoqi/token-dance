@@ -1,4 +1,5 @@
 import { useEffect, useRef, RefObject, useState } from 'react';
+import { useNavigate, createSearchParams } from "react-router-dom";
 import {
   Form,
   Input,
@@ -22,6 +23,7 @@ import {
 } from 'antd-mobile'
 import { NFTStorage } from 'nft.storage'
 import { BigNumber, ethers } from 'ethers';
+
 import dayjs from 'dayjs'
 import styles from './index.module.scss';
 import ImageCrop from './imageCrop';
@@ -41,14 +43,11 @@ let fileType = '';
 const CreateTicket = () => {
   const [createPercent, setCreatePercent] = useState(0);
   const [cropperUrl, setCropperUrl] = useState<string>('');
-  const [fileList, setFileList] = useState<ImageUploadItem[]>([
-    // {
-    //   url:'http://localhost:3000/4a7cde6b-b09d-49b3-bc16-ee5ced89c26b'
-    // }
-  ])
+  const [fileList, setFileList] = useState<ImageUploadItem[]>([])
   const [showCropper, setShowCropper] = useState<Boolean>(false);
   const [showLoading, setShowLoading] = useState<Boolean>(false);
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const confirmCb = function(blob: Blob) {
     setShowCropper(false);
@@ -62,6 +61,11 @@ const CreateTicket = () => {
       icon: 'success',
       content: '创建成功',
     })
+    setTimeout(() => {
+        navigate({
+          pathname: '/list'
+        });
+    }, 200)
   }
 
   const createFailed = function() {
@@ -119,7 +123,7 @@ const CreateTicket = () => {
     }).catch((e: Error) => e);
     console.log('metadata:', metadata)
     setCreatePercent(50);
-    if(!metadata.ipnft) {
+    if(!(metadata as any).ipnft) {
       return createFailed();
     }
 
@@ -133,7 +137,7 @@ const CreateTicket = () => {
     const holdMeetingResp = await contract?.HoldMeeting(
       values.title,
       values.shortTitle || '',
-      `https://${metadata.ipnft}.ipfs.nftstorage.link/metadata.json`,
+      `https://${(metadata as any).ipnft}.ipfs.nftstorage.link/metadata.json`,
       Math.floor(values.time.getTime() / 1000),
       Number(values.maxInvite),
       Number(values.type),
@@ -308,7 +312,15 @@ const CreateTicket = () => {
         <div className={styles.loadingBox}>
           {/* <SpinLoading  style={{ '--size': '48px', alignSelf: 'center' }} ></SpinLoading>
            */}
-          <ProgressCircle percent={createPercent} style={{ '--track-width': '4px' }} />
+          <ProgressCircle
+            percent={createPercent}
+            style={{
+              '--track-width': '4px',
+              '--size': '90px'
+            }}
+          >
+            <span className={styles.loadingText}>{createPercent}%</span>
+          </ProgressCircle>
         </div>
       </Mask> : null}
     </div>)
