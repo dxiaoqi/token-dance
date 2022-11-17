@@ -14,6 +14,7 @@ import { resolve } from 'node:path/win32';
 import { objType } from "../../types/index";
 import InviteAvatar from '../../assert/invite_avatar.png';
 import Avatar from '../../assert/invite-avatar.png';
+import { Toast } from 'antd-mobile';
 
 function List() {
   let navigate = useNavigate();
@@ -58,6 +59,24 @@ function List() {
     getTickensList();
   }, []);
 
+  const copyData = async () => {
+    const copyData = user.userInfo.address || localStorage.getItem("walletAddress");
+
+    try {
+      await navigator.clipboard.writeText(copyData as string);
+      Toast.show({
+        icon: 'success',
+        content: '复制成功!',
+      })
+    } catch (err) {
+      Toast.show({
+        icon: 'fail',
+        content: '复制失败!',
+      })
+    }
+
+  }
+
 
   return (
     <div className={styles.container}>
@@ -66,7 +85,7 @@ function List() {
           <img src={InviteAvatar} alt="" />
           <img src={Avatar} alt="" />
         </div>
-        {user.userInfo.address ? <div className={styles.address}>{handleAddress(user.userInfo.address)}</div> : <div className={styles.address}>{handleAddress(localStorage.getItem("walletAddress") as string)}</div>}
+        {user.userInfo.address ? <div onClick={copyData} className={styles.address}>{handleAddress(user.userInfo.address)}</div> : <div onClick={copyData} className={styles.address}>{handleAddress(localStorage.getItem("walletAddress") as string)}</div>}
       </div>
       <div className={styles.content}>
         {
