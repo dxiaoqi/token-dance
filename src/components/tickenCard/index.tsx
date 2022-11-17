@@ -9,7 +9,6 @@ import stores from '../../store';
 import { url } from 'node:inspector';
 
 const TickenCard:FC<{item:objType}> = ({item})=> {
-    console.log("item",item);
     let navigate = useNavigate();
     const user = stores.user;
 
@@ -20,6 +19,15 @@ const TickenCard:FC<{item:objType}> = ({item})=> {
             pathname: '/qrcode',
             search: `?${createSearchParams(params)}`,
           });
+    }
+
+    if(item.image.startsWith('ipfs://')){
+        const idReg = /\/\/.*\//g;
+        const idMatch = (item.image.match(idReg))[0];
+        const id = idMatch.slice(2,idMatch.length-1);
+        const nameIndex = item.image.lastIndexOf('/');
+        const name = item.image.slice(nameIndex+1);
+        item.image = `https://${id}.ipfs.nftstorage.link/${name}`;
     }
 
 
