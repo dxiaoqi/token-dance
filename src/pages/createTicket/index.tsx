@@ -127,7 +127,7 @@ const CreateTicket = () => {
     const accounts =await  web3Provider.send("eth_requestAccounts", []);
     let signer = web3Provider.getSigner();
     // 0x3dea2B63093956728D72438c4cC0ED8386b98cA0
-    const contract = new ethers.Contract('0x3dea2B63093956728D72438c4cC0ED8386b98cA0', IJunoabi, signer);
+    const contract = new ethers.Contract(config.CONTRACT_ADRESS, IJunoabi, signer);
     // 会议名，会议缩写，metadata url，举办时间（秒级时间戳），人数限制，会议类型，票价
     console.log('before hold')
     const holdMeetingResp = await contract?.HoldMeeting(
