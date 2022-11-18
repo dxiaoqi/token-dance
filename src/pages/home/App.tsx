@@ -62,14 +62,14 @@ function App() {
         <div className={styles.contactTitle}>How To Connect Us</div>
         <div className={styles.contactList}>
           <div className={styles.contactItem}>
-            <img className={styles.contactIcon} src={twitter} alt="" />
+            <img className={styles.contactIcon} src={discord} alt="" />
             <div className={styles.contactIconText}>
               <div className={styles.contactIconTextTitle}>Discord</div>
               <div className={styles.contactIconTextDetail}>TokenDance</div>
             </div>
           </div>
           <div className={styles.contactItem}>
-            <img className={styles.contactIcon} src={discord} alt="" />
+            <img className={styles.contactIcon} src={twitter} alt="" />
             <div className={styles.contactIconText}>
               <div className={styles.contactIconTextTitle}>Twitter</div>
               <div className={styles.contactIconTextDetail}>@TokenDance</div>
