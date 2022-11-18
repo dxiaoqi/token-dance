@@ -20,6 +20,7 @@
     "html5-qrcode": "^2.2.8",
     "mobx": "^6.6.2",
     "mobx-react": "^7.5.3",
+    "moment": "^2.29.4",
     "nft.storage": "^7.0.0",
     "query-string": "^7.1.1",
     "react": "^18.2.0",
