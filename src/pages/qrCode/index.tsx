@@ -28,7 +28,7 @@ interface TicketInfo {
 let req = {} as Etherabi;
 let uid = "";
 let signer = {} as any;
-
+let showQr = false;
 const Qr = () => {
   const search = querystring.parse(window.location.href.split("?")[1]);
   const cid: string =
@@ -42,7 +42,6 @@ const Qr = () => {
   const [visible, setVisible] = useState(false);
   const [info, setInfo] = useState<TicketInfo>();
   const [caninvite, setCanInvite] = useState(false);
-
   const [_canSign, setSign] = useState(false);
 
   const [_isSign, setIsSign] = useState(false);
@@ -57,8 +56,9 @@ const Qr = () => {
       window.location.origin + `/#/qrcode?mode=sign&tid=${tid}&cid=${uid}`;
     console.log(`${JSON.stringify({ data: url })}`);
     setTimeout(() => {
-      if (ref.current) {
+      if (ref.current && !showQr) {
         genQr(ref.current, url);
+        showQr = true;
       }
     }, 300);
   };
@@ -212,7 +212,7 @@ const Qr = () => {
         <div>
           <div className={styles.title}>
             <h1>{info?.name || "Token Dance"}</h1>
-            {_canSign && mode === "ticket" && (
+            {_canSign && !_isSign && mode === "ticket" && (
               <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
             )}
           </div>
