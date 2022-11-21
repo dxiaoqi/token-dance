@@ -58,7 +58,7 @@ function List() {
         tickenAdress: item,
       });
     }
-    setList(dataArr);
+    setList(dataArr.slice());
   };
 
   useEffect(() => {
