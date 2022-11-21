@@ -1,15 +1,19 @@
-import React, { useEffect } from "react";
-import { initProvide } from "../../utils/ether";
-import { Button } from "antd-mobile";
+import React, { useEffect, useState } from 'react';
+import { initProvide } from '../../utils/ether';
+import { Button, Modal, Toast } from 'antd-mobile';
 import { useNavigate } from "react-router-dom";
-// import WalletCard from '../../components/WalletCard';
-import styles from "./index.module.scss";
-import icon from ".././../assert/icon.png";
-import twitter from "../../assert/twitter.png";
-import discord from "../../assert/discord.png";
+import styles from './index.module.scss';
+import icon from '.././../assert/icon.png';
+import twitter from '../../assert/twitter.png';
+import discord from '../../assert/discord.png';
+import avatar from '../../assert/avatar.png';
+import { observer } from 'mobx-react';
+import stores from '../../store';
+
 
 function App() {
   let navigate = useNavigate();
+  const user = stores.user;
 
   useEffect(() => {
     initProvide()
@@ -22,6 +26,24 @@ function App() {
   const gotoConnect = () => {
     navigate("/connect");
   };
+
+  const connectButton = async () => {
+    initProvide().then(async ({ web3Provider }) => {
+      if (web3Provider) {
+        const accounts = await web3Provider.send("eth_requestAccounts", []);
+        user.setUser({ address: accounts[0] });
+        localStorage.setItem("walletAddress", accounts[0]);
+        Modal.clear();
+        navigate("/list");
+      }
+    }).catch((err) => {
+      Toast.show({
+        icon: 'fail',
+        content: '请安装metamask钱包',
+      })
+    })
+  };
+
 
   return (
     <div className={styles.container}>
@@ -57,7 +79,29 @@ function App() {
           </li>
         </ul>
       </div>
-      <div className={styles.btn} onClick={gotoConnect}></div>
+      <div className={styles.btn}
+        onClick={() => {
+          Modal.show({
+            content: (
+              <div className={styles.modalContainer} onClick={connectButton}>
+                <div className={styles.connectContainer}>
+                  <div className={styles.title}>Connet your Wallet</div>
+                  <div className={styles.avatarWrapper}>
+                    <img className={styles.avatar} src={avatar} />
+                    <div className={styles.description}>MetaMask</div>
+                  </div>
+                  <div className={styles.horizon}></div>
+                  <div
+                  >
+                    <div className={styles.connectTxt}>Click to authorize</div>
+                  </div>
+                </div>
+              </div>
+            ),
+            closeOnMaskClick: true,
+          })
+        }}
+      ></div>
       <div className={styles.contact}>
         <div className={styles.contactTitle}>How To Connect Us</div>
         <div className={styles.contactList}>
@@ -81,4 +125,4 @@ function App() {
   );
 }
 
-export default App;
+export default observer(App);
