@@ -95,6 +95,7 @@ const Qr = () => {
     }
     // return IsSign 参赛者id
     const can = await req?.IsSign?.(cid);
+    console.log(666, can);
     setIsSign(can as boolean);
     return can;
   };
@@ -204,11 +205,25 @@ const Qr = () => {
       }
     }
   };
+
+  const renderImg = (image: string) => {
+    if (image.startsWith("ipfs://")) {
+      const idReg = /\/\/.*\//g;
+      const match = image!.match(idReg);
+      if (match) {
+        const idMatch = match[0];
+        const id = idMatch.slice(2, idMatch.length - 1);
+        const nameIndex = image.lastIndexOf("/");
+        const name = image.slice(nameIndex + 1);
+        return `https://${id}.ipfs.nftstorage.link/${name}`;
+      }
+    }
+  }
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         {_isSign && <div className={styles.written}>written off</div>}
-        <img width={100} height={100} src={Icon} alt="" />
+        <img width={100} height={100} src={info?.image && renderImg(info?.image)} alt="" />
         <div>
           <div className={styles.title}>
             <h1>{info?.name || "Token Dance"}</h1>
