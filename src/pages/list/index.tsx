@@ -14,14 +14,16 @@ import { resolve } from "node:path/win32";
 import { objType } from "../../types/index";
 import InviteAvatar from "../../assert/invite_avatar.png";
 import Avatar from "../../assert/invite-avatar.png";
-import { Toast } from "antd-mobile";
+import { Divider, Toast, Button } from "antd-mobile";
 
 function List() {
   let navigate = useNavigate();
   const user = stores.user;
+  const userAddress = user.userInfo.address || localStorage.getItem("walletAddress");
   const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
   let uniqueMeetings: string[] = [];
   const [list, setList] = useState<objType[]>();
+  const [isInWhiteList, setIsInWhiteList] = useState(true);
 
   const getTickensList = async () => {
     const contract = new ethers.Contract(
@@ -29,12 +31,8 @@ function List() {
       IJunoabi,
       web3Provider
     );
-    const userAddress =
-      user.userInfo.address || localStorage.getItem("walletAddress");
-    console.log("user address", userAddress);
-    const meetings = await contract.Meetings(userAddress);
-    console.log("user meeting", meetings);
-    // uniqueMeetings = unitAndunique(holds, meetings);
+
+    const meetings = await contract.Meetings(userAddress);;
     getTicken(meetings);
   };
 
@@ -65,6 +63,20 @@ function List() {
     getTickensList();
   }, []);
 
+  const getWhiteList = async () => {
+    const contract = new ethers.Contract(
+      Settings.CONTRACT_ADRESS,
+      INymphabi,
+      web3Provider
+    );
+    const isWhite = await contract.isInWhite(userAddress);
+    setIsInWhiteList(isWhite);
+  }
+
+  useEffect(() => {
+    getWhiteList();
+  }, []);
+
   const copyData = async () => {
     const copyData =
       user.userInfo.address || localStorage.getItem("walletAddress");
@@ -83,8 +95,15 @@ function List() {
     }
   };
 
+  const mintTicken = ()=>{
+    navigate("/createticket");
+  }
+
   return (
     <div className={styles.container}>
+      {isInWhiteList && <Button color='primary' fill='outline' className={styles.createBtn} onClick={mintTicken}>
+        MINT TICKEN
+      </Button>}
       <div className={styles.header}>
         <div className={styles.avatar}>
           <img src={InviteAvatar} alt="" />
