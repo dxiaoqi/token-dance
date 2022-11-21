@@ -138,8 +138,6 @@
 
 
 .modalContainer {
-  // width: 100vw;
-  // height: 100vh;
   background: #001419;
   display: flex;
   justify-content: center;
@@ -155,13 +153,13 @@
     background-image: url('../../assert/bg-personal.png');
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    // background-size: cover;
     display: flex;
     flex-direction: column;
     align-items: center;
 
     .title {
-      margin-top: 16px;
+      margin-top: 36px;
       width: 190px;
       height: 39px;
       font-family: 'Inter';
@@ -170,6 +168,7 @@
       font-size: 20px;
       line-height: 38px;
       color: #FFFFFF;
+      text-align: center;
     }
 
     .avatarWrapper {
@@ -227,8 +226,8 @@
 }
 
 :global {
-  .adm-center-popup-body {
-    background-color: none;
-    border-radius: none;
+  .adm-center-popup {
+    --background-color: none;
+    --border-radius: 38px;
   }
 }
