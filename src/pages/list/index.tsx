@@ -14,14 +14,17 @@ import { resolve } from "node:path/win32";
 import { objType } from "../../types/index";
 import InviteAvatar from "../../assert/invite_avatar.png";
 import Avatar from "../../assert/invite-avatar.png";
-import { Toast } from "antd-mobile";
+import { Divider, Toast, Button } from "antd-mobile";
 
 function List() {
   let navigate = useNavigate();
   const user = stores.user;
+  const userAddress =
+    user.userInfo.address || localStorage.getItem("walletAddress");
   const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
   let uniqueMeetings: string[] = [];
   const [list, setList] = useState<objType[]>();
+  const [isInWhiteList, setIsInWhiteList] = useState(true);
 
   const getTickensList = async () => {
     const contract = new ethers.Contract(
@@ -29,40 +32,54 @@ function List() {
       IJunoabi,
       web3Provider
     );
-    const userAddress =
-      user.userInfo.address || localStorage.getItem("walletAddress");
-    console.log("user address", userAddress);
+
     const meetings = await contract.Meetings(userAddress);
-    console.log("user meeting", meetings);
-    // uniqueMeetings = unitAndunique(holds, meetings);
     getTicken(meetings);
   };
 
   const getTicken = async (arr: string[]) => {
     const dataArr: objType[] = [];
-    for (let item of arr) {
+    const fetchContractInfo = async (item: string) => {
       const contract = new ethers.Contract(item, INymphabi, web3Provider);
       // 获取ticket的ipfs地址
       const ipfsUri = await contract.tokenURI(1);
-      // 去获取ticket的源信息
-      const { data } = await axios.get(ipfsUri);
-      // 获取ticket的举办时间
-      const time = await contract?.HoldTime();
-      console.log("time", time.toNumber());
-      // 获取票的主办者
-      const owner = await contract?.owner();
+      const [{ data }, time, owner] = await Promise.all([
+        axios.get(ipfsUri),
+        contract?.HoldTime(),
+        contract?.owner(),
+      ]);
       dataArr.push({
         ...data,
         time,
         owner,
         tickenAdress: item,
       });
+    };
+    const fetchList: Promise<void>[] = [];
+    for (let item of arr) {
+      fetchList.push(fetchContractInfo(item));
     }
-    setList(dataArr);
+    await Promise.all(fetchList);
+
+    setList(dataArr.slice());
   };
 
   useEffect(() => {
     getTickensList();
+  }, []);
+
+  const getWhiteList = async () => {
+    const contract = new ethers.Contract(
+      Settings.CONTRACT_ADRESS,
+      INymphabi,
+      web3Provider
+    );
+    const isWhite = await contract.isInWhite(userAddress);
+    setIsInWhiteList(isWhite);
+  };
+
+  useEffect(() => {
+    getWhiteList();
   }, []);
 
   const copyData = async () => {
@@ -83,8 +100,22 @@ function List() {
     }
   };
 
+  const mintTicken = () => {
+    navigate("/createticket");
+  };
+
   return (
     <div className={styles.container}>
+      {isInWhiteList && (
+        <Button
+          color="primary"
+          fill="outline"
+          className={styles.createBtn}
+          onClick={mintTicken}
+        >
+          MINT TICKEN
+        </Button>
+      )}
       <div className={styles.header}>
         <div className={styles.avatar}>
           <img src={InviteAvatar} alt="" />

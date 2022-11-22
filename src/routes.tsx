@@ -24,7 +24,7 @@ interface RouterConfig {
 // 主路由
 export const mainRouteConfig = [
     {
-        path: "/", title: "TokenDance 2022", component: App,
+        path: "/", title: "Ticken", component: App,
         children: []
     },
     {
@@ -35,7 +35,7 @@ export const mainRouteConfig = [
         path: '/scancode', title: "二维码扫描", component: Scancode,
     },
     {
-        path: 'createticket', title: "新门票", component: CreateTicket,
+        path: '/createticket', title: "新门票", component: CreateTicket,
     }, {
         path: "/connect", title: "链接钱包", component: ConnectWallet,
         children: []

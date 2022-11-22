@@ -6,9 +6,16 @@
     background-image: url('../../assert/bg-ticket.png');
     background-position: center;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
     padding-bottom: 50px;
     padding-top: 35px;
+    position: relative;
+
+    .createBtn {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
 
 
     .header {
