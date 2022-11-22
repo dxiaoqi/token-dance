@@ -19,7 +19,8 @@ import { Divider, Toast, Button } from "antd-mobile";
 function List() {
   let navigate = useNavigate();
   const user = stores.user;
-  const userAddress = user.userInfo.address || localStorage.getItem("walletAddress");
+  const userAddress =
+    user.userInfo.address || localStorage.getItem("walletAddress");
   const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
   let uniqueMeetings: string[] = [];
   const [list, setList] = useState<objType[]>();
@@ -32,30 +33,34 @@ function List() {
       web3Provider
     );
 
-    const meetings = await contract.Meetings(userAddress);;
+    const meetings = await contract.Meetings(userAddress);
     getTicken(meetings);
   };
 
   const getTicken = async (arr: string[]) => {
     const dataArr: objType[] = [];
-    for (let item of arr) {
+    const fetchContractInfo = async (item: string) => {
       const contract = new ethers.Contract(item, INymphabi, web3Provider);
       // 获取ticket的ipfs地址
       const ipfsUri = await contract.tokenURI(1);
-      // 去获取ticket的源信息
-      const { data } = await axios.get(ipfsUri);
-      // 获取ticket的举办时间
-      const time = await contract?.HoldTime();
-      console.log("time", time.toNumber());
-      // 获取票的主办者
-      const owner = await contract?.owner();
+      const [{ data }, time, owner] = await Promise.all([
+        axios.get(ipfsUri),
+        contract?.HoldTime(),
+        contract?.owner(),
+      ]);
       dataArr.push({
         ...data,
         time,
         owner,
         tickenAdress: item,
       });
+    };
+    const fetchList: Promise<void>[] = [];
+    for (let item of arr) {
+      fetchList.push(fetchContractInfo(item));
     }
+    await Promise.all(fetchList);
+
     setList(dataArr.slice());
   };
 
@@ -71,7 +76,7 @@ function List() {
     );
     const isWhite = await contract.isInWhite(userAddress);
     setIsInWhiteList(isWhite);
-  }
+  };
 
   useEffect(() => {
     getWhiteList();
@@ -95,15 +100,22 @@ function List() {
     }
   };
 
-  const mintTicken = ()=>{
+  const mintTicken = () => {
     navigate("/createticket");
-  }
+  };
 
   return (
     <div className={styles.container}>
-      {isInWhiteList && <Button color='primary' fill='outline' className={styles.createBtn} onClick={mintTicken}>
-        MINT TICKEN
-      </Button>}
+      {isInWhiteList && (
+        <Button
+          color="primary"
+          fill="outline"
+          className={styles.createBtn}
+          onClick={mintTicken}
+        >
+          MINT TICKEN
+        </Button>
+      )}
       <div className={styles.header}>
         <div className={styles.avatar}>
           <img src={InviteAvatar} alt="" />
