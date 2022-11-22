@@ -39,7 +39,7 @@ function App() {
     }).catch((err) => {
       Toast.show({
         icon: 'fail',
-        content: '请安装metamask钱包',
+        content: '请安装metamask钱包或者在metamsk钱包浏览器里打开!',
       })
     })
   };
