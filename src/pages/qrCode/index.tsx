@@ -53,7 +53,7 @@ const Qr = () => {
     setVisible(true);
     // cid 参赛人的id
     const url =
-      window.location.origin + `/#/qrcode?mode=sign&tid=${tid}&cid=${uid}`;
+      window.location.origin + `/v2/#/qrcode?mode=sign&tid=${tid}&cid=${uid}`;
     console.log(`${JSON.stringify({ data: url })}`);
     setTimeout(() => {
       if (ref.current && !showQr) {
@@ -71,7 +71,7 @@ const Qr = () => {
   const copy = () => {
     const url =
       window.location.origin +
-      `/#/qrcode?mode=mint&tid=${tid}&cid=${uid}&hid=${uid}`;
+      `/v2/#/qrcode?mode=mint&tid=${tid}&cid=${uid}&hid=${uid}`;
     Dialog.alert({
       content: <p style={{ padding: "10px", wordBreak: "break-all" }}>{url}</p>,
       onConfirm: () => {
