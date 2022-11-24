@@ -2385,6 +2385,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/deepai@^1.0.0":
+  "integrity" "sha512-VEMnMZc7HivoaOTqJKuIeB8z99JL4obmwKKaNW/HLMp1MvTHxAT5JVl/wToubeyqK74ZMf3D1n9ZSF58ddnMYg=="
+  "resolved" "https://registry.npmjs.org/@types/deepai/-/deepai-1.0.0.tgz"
+  "version" "1.0.0"
+
 "@types/eslint-scope@^3.7.3":
   "integrity" "sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA=="
   "resolved" "https://registry.npmmirror.com/@types/eslint-scope/-/eslint-scope-3.7.4.tgz"
@@ -3443,6 +3448,13 @@
     "follow-redirects" "^1.15.0"
     "form-data" "^4.0.0"
     "proxy-from-env" "^1.1.0"
+
+"axios@0.25.0":
+  "integrity" "sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-0.25.0.tgz"
+  "version" "0.25.0"
+  dependencies:
+    "follow-redirects" "^1.14.7"
 
 "axobject-query@^2.2.0":
   "integrity" "sha512-Td525n+iPOOyUQIeBfcASuG6uJsDOITl7Mds5gFyerkWiX7qhUTdYUBlSgNMyVqtSJqwpt1kXGLdUt6SykLMRA=="
@@ -4557,6 +4569,14 @@
   "resolved" "https://registry.npmmirror.com/deep-is/-/deep-is-0.1.4.tgz"
   "version" "0.1.4"
 
+"deepai@^1.0.21":
+  "integrity" "sha512-4rB4VlSM5gfkeJOrl4euqrpFF/0eMgCW1TFpqwye9x+f+bXV/pTCcIlXYF9O6cX/WJLx41UvnNVAMadrsjNQZw=="
+  "resolved" "https://registry.npmjs.org/deepai/-/deepai-1.0.21.tgz"
+  "version" "1.0.21"
+  dependencies:
+    "axios" "0.25.0"
+    "form-data" "4.0.0"
+
 "deepmerge@^4.2.2":
   "integrity" "sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg=="
   "resolved" "https://registry.npmmirror.com/deepmerge/-/deepmerge-4.2.2.tgz"
@@ -5593,7 +5613,7 @@
   "resolved" "https://registry.npmmirror.com/flatted/-/flatted-3.2.7.tgz"
   "version" "3.2.7"
 
-"follow-redirects@^1.0.0", "follow-redirects@^1.15.0":
+"follow-redirects@^1.0.0", "follow-redirects@^1.14.7", "follow-redirects@^1.15.0":
   "integrity" "sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA=="
   "resolved" "https://registry.npmmirror.com/follow-redirects/-/follow-redirects-1.15.2.tgz"
   "version" "1.15.2"
@@ -5654,6 +5674,15 @@
   dependencies:
     "asynckit" "^0.4.0"
     "combined-stream" "^1.0.6"
+    "mime-types" "^2.1.12"
+
+"form-data@4.0.0":
+  "integrity" "sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww=="
+  "resolved" "https://registry.npmjs.org/form-data/-/form-data-4.0.0.tgz"
+  "version" "4.0.0"
+  dependencies:
+    "asynckit" "^0.4.0"
+    "combined-stream" "^1.0.8"
     "mime-types" "^2.1.12"
 
 "forwarded@0.2.0":
@@ -7995,6 +8024,11 @@
   "integrity" "sha512-IOpS0bf3+hXIhDIy+CmlNMBfFpAbHS0aVHcNC+xH/TFYEKIIVDKNYRh9eKlXuVfJ1iRKAp0cRVmO145CyJAMVQ=="
   "resolved" "https://registry.npmmirror.com/mobx/-/mobx-6.6.2.tgz"
   "version" "6.6.2"
+
+"moment@^2.29.4":
+  "integrity" "sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w=="
+  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.4.tgz"
+  "version" "2.29.4"
 
 "move-file@^2.1.0":
   "integrity" "sha512-i9qLW6gqboJ5Ht8bauZi7KlTnQ3QFpBCvMvFfEcHADKgHGeJ9BZMO7SFCTwHPV9Qa0du9DYY1Yx3oqlGt30nXA=="
