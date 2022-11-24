@@ -24,7 +24,7 @@ function List() {
   const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
   let uniqueMeetings: string[] = [];
   const [list, setList] = useState<objType[]>();
-  const [isInWhiteList, setIsInWhiteList] = useState(true);
+  const [isInWhiteList, setIsInWhiteList] = useState(false);
 
   const getTickensList = async () => {
     const contract = new ethers.Contract(
@@ -74,6 +74,7 @@ function List() {
       INymphabi,
       web3Provider
     );
+    console.log("userAddress",userAddress);
     const isWhite = await contract.isInWhite(userAddress);
     setIsInWhiteList(isWhite);
   };
