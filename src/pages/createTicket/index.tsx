@@ -1,5 +1,6 @@
 import { useEffect, useRef, RefObject, useState } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
+import { UploadOutline } from 'antd-mobile-icons'
 import {
   Form,
   Input,
@@ -25,6 +26,7 @@ import { NFTStorage } from "nft.storage";
 import { BigNumber, ethers } from "ethers";
 
 import dayjs from "dayjs";
+import deepai from 'deepai';
 import styles from "./index.module.scss";
 import ImageCrop from "./imageCrop";
 import type { DatePickerRef } from "antd-mobile/es/components/date-picker";
@@ -32,6 +34,7 @@ import { ImageUploadItem } from "antd-mobile/es/components/image-uploader";
 import { IJunoabi, INymphabi } from "../../utils/ether";
 import { Etherabi } from "../../types/index";
 import config from "../../config/app";
+import { FormInstance } from "rc-field-form";
 
 const NFT_STORAGE_TOKEN =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJERDdDNDljMzRjN0IxMDVGNDdDNzA0MDI3YTRkZDhBNEU3MzdiMDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODA2OTU4NDE1MCwibmFtZSI6InRva2VuLWRhbmNlLWlwZnMta2V5In0.7D7Ea8v2FqTHNxa_4AQA-VEzsGdPbvjvtiQF8Squ5Kk";
@@ -47,7 +50,12 @@ const CreateTicket = () => {
   const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
   const [showCropper, setShowCropper] = useState<Boolean>(false);
   const [showLoading, setShowLoading] = useState<Boolean>(false);
+
+  const [uploadMode, setUploadMode] = useState<string>('user');
+  const [aigcText, setAigcText] = useState('');
   const ref = useRef<HTMLDivElement>(null);
+  const formRef = useRef<FormInstance>(null);
+  const handler = useRef<any>()
 
   const confirmCb = function (blob: Blob) {
     setShowCropper(false);
@@ -174,9 +182,56 @@ const CreateTicket = () => {
     // const [from, ticketAddress] = event.args;
     // console.log(from, ticketAddress);
   };
+
+  const genAiGc = async () => {
+    deepai.setApiKey('32956a3c-7416-4d1d-8053-ae68223630e7');
+    handler.current = Toast.show({
+      content: 'generating...',
+      icon: 'loading'
+    })
+    try {
+      var resp = await deepai.callStandardApi('text2img', {
+        text: aigcText,
+      });
+      console.log(resp)
+      const url = resp.output_url;
+      setCropperUrl(url);
+      setShowCropper(true);
+      uploading = true;
+      await new Promise<void>((resolve, reject) => {
+        const interval = setInterval(() => {
+          if (!uploading) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 100);
+      });
+      fileType = 'image/jpeg'
+      fileName=  `${dayjs().unix()}${Math.floor(Math.random()*10)}.jpg`;
+      const newFile = new File([cropperBlob], fileName, { type: fileType });
+      const newUrl = URL.createObjectURL(newFile);
+      if (formRef.current) {
+        handler.current.close();
+        formRef.current.setFieldValue('image', [{
+          url: newUrl,
+        }])
+      }
+      console.log(resp);
+      // 生成图片
+    } catch (e) {
+      handler.current.close();
+      setTimeout(() => {
+        Toast.show({
+          icon: 'error',
+          content: 'please check your input',
+        })
+      }, 1000);
+    }
+  }
   return (
     <div className={styles.container} ref={ref}>
       <Form
+        ref={formRef}
         name="form"
         onFinish={onFinish}
         onFinishFailed={inputError}
@@ -193,26 +248,74 @@ const CreateTicket = () => {
         <Form.Item name="shortTitle" label="Symbol">
           <Input placeholder="" />
         </Form.Item>
-        <Form.Item
-          name="image"
-          label="Upload Image"
-          rules={[
-            {
-              required: true,
-              message: "Please upload a face picture",
-            },
-          ]}
-        >
-          <ImageUploader
-            value={fileList}
-            onChange={setFileList}
-            upload={uploadFun}
-            maxCount={1}
-            imageFit="contain"
-            showUpload={fileList.length < 1}
-            onCountExceed={(exceed) => {}}
+
+        <Selector
+            columns={3}
+            value={[uploadMode]}
+            onChange={type => setUploadMode(type[0])}
+            options={[
+              { label: 'Upload', value: 'user' },
+              { label: 'AIGC', value: 'aigc' }
+            ]}
           />
-        </Form.Item>
+          {
+            uploadMode === 'user' ? (
+              <Form.Item
+                name="image"
+                label="Upload Image"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please upload a face picture",
+                  },
+                ]}
+              >
+                <ImageUploader
+                  value={fileList}
+                  onChange={setFileList}
+                  upload={uploadFun}
+                  maxCount={1}
+                  imageFit="contain"
+                  showUpload={fileList.length < 1}
+                  onCountExceed={(exceed) => {}}
+                />
+              </Form.Item>
+            ) : (
+              <div>
+                <Form.Item
+                  extra={
+                    <div className={styles.extraPart}>
+                      <a onClick={genAiGc}>Generate</a>
+                    </div>
+                  }
+                >
+                  <Input onChange={setAigcText} placeholder='input the text that generated image' clearable />
+                </Form.Item>
+                <Form.Item
+                  name="image"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please generate a face picture",
+                    },
+                  ]}
+                >
+                  <ImageUploader
+                    value={fileList}
+                    onChange={setFileList}
+                    upload={uploadFun}
+                    deletable={false}
+                    maxCount={1}
+                    imageFit="contain"
+                    showUpload={false}
+                    onCountExceed={(exceed) => {}}
+                  />
+                </Form.Item>
+              </div>
+            )
+            
+            
+          }
 
         <Form.Item
           name="time"
