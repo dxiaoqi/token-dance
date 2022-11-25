@@ -187,7 +187,8 @@ const CreateTicket = () => {
     deepai.setApiKey('32956a3c-7416-4d1d-8053-ae68223630e7');
     handler.current = Toast.show({
       content: 'generating...',
-      icon: 'loading'
+      icon: 'loading',
+      duration: 0
     })
     try {
       var resp = await deepai.callStandardApi('text2img', {
@@ -195,6 +196,7 @@ const CreateTicket = () => {
       });
       console.log(resp)
       const url = resp.output_url;
+      handler.current.close();
       setCropperUrl(url);
       setShowCropper(true);
       uploading = true;
@@ -211,7 +213,6 @@ const CreateTicket = () => {
       const newFile = new File([cropperBlob], fileName, { type: fileType });
       const newUrl = URL.createObjectURL(newFile);
       if (formRef.current) {
-        handler.current.close();
         formRef.current.setFieldValue('image', [{
           url: newUrl,
         }])
