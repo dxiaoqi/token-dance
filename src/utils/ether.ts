@@ -50,7 +50,8 @@ export const INymphabi = [
   "function setApprovalForAll(address,bool)",
   "function tokenURI(uint256) view returns (string)",
   "function supportsInterface(bytes4) view returns (bool)",
-  "function transferFrom(address,address,uint256)"
+  "function transferFrom(address,address,uint256)",
+  "function isInWhite(address) view returns (bool)"
 ]
 
 
