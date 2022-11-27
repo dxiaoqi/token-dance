@@ -1,5 +1,7 @@
 import { useEffect, useRef, RefObject, useState } from 'react';
 import { useNavigate, createSearchParams } from "react-router-dom";
+import { FormInstance } from 'antd-mobile/es/components/form'
+
 import {
   Form,
   Input,
@@ -19,19 +21,25 @@ import {
   Stepper,
   Switch,
   Toast,
-  Checkbox
+  Checkbox,
+  Divider
 } from 'antd-mobile'
 import { NFTStorage } from 'nft.storage'
 import { BigNumber, ethers } from 'ethers';
 
 import dayjs from 'dayjs'
 import styles from './index.module.scss';
+import './index.scss';
 import ImageCrop from './imageCrop';
 import type { DatePickerRef } from 'antd-mobile/es/components/date-picker'
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader'
 import { IJunoabi, INymphabi } from '../../utils/ether';
 import { Etherabi } from '../../types/index'
 import config from '../../config/app'
+
+import createTicketBgImage from '../../assert/create-ticket-bg.png';
+import createTicketButtonBg from '../../assert/create-ticket-button-bg.png';
+
 
 
 const NFT_STORAGE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDJERDdDNDljMzRjN0IxMDVGNDdDNzA0MDI3YTRkZDhBNEU3MzdiMDUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY2ODA2OTU4NDE1MCwibmFtZSI6InRva2VuLWRhbmNlLWlwZnMta2V5In0.7D7Ea8v2FqTHNxa_4AQA-VEzsGdPbvjvtiQF8Squ5Kk'
@@ -40,6 +48,7 @@ let uploading = false;
 let cropperBlob: Blob;
 let fileName = '';
 let fileType = '';
+
 const CreateTicket = () => {
   const navigate = useNavigate();
   const [createPercent, setCreatePercent] = useState(0);
@@ -48,6 +57,11 @@ const CreateTicket = () => {
   const [showCropper, setShowCropper] = useState<Boolean>(false);
   const [showLoading, setShowLoading] = useState<Boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
+  const formRef = useRef<FormInstance>(null);
+
+  const clickSubmit = function() {
+    formRef?.current?.submit();
+  }
 
   const confirmCb = function(blob: Blob) {
     setShowCropper(false);
@@ -169,145 +183,192 @@ const CreateTicket = () => {
   }
   return (
     <div className={styles.container} ref={ref}>
-      <Form
-        name='form'
-        onFinish={onFinish}
-        onFinishFailed={inputError}
-        footer={
-          <Button block type='submit' color='primary' size='large'>
-            Submit
-          </Button>
-        }
-      >
-        <Form.Header>Please fill in the usage rules of the ticket</Form.Header>
-        <Form.Item name='title' label='Title' rules={[{ required: true }]}>
-          <Input placeholder='' />
-        </Form.Item>
-        <Form.Item name='shortTitle' label='symbol'>
-          <Input placeholder='' />
-        </Form.Item>
-        <Form.Item
-          name='image'
-          label='Upload Image'
-          rules={[
-            {
-              required: true,
-              message: 'Please upload a face picture'
-            }
-          ]}
+      <img src={createTicketBgImage} alt="" className={styles.bg} />
+      <div className="create-ticket-form-wrap">
+        <Form
+          name='form'
+          ref={formRef}
+          onFinish={onFinish}
+          onFinishFailed={inputError}
+          footer={
+            <div onClick={clickSubmit} className={styles.buttonBox}>
+              submit
+            </div>
+            // <Button block type='submit' color='primary' size='large'>
+            //   Submit
+            // </Button>
+          }
         >
-          <ImageUploader
-            value={fileList}
-            onChange={setFileList}
-            upload={uploadFun}
-            maxCount={1}
-            imageFit="contain"
-            showUpload={fileList.length < 1}
-            onCountExceed={exceed => {
-            }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          name='time'
-          label='Time'
-          trigger='onConfirm'
-          onClick={(e, datePickerRef: RefObject<DatePickerRef>) => {
-            datePickerRef.current?.open()
-          }}
-          rules={[
-            {
+          <Form.Header>Please fill in the usage rules of the ticket</Form.Header>
+          <Form.Item
+            name='title'
+            label='Title'
+            rules={[{
               required: true,
-              message: 'Please select a meeting time'
-            }
-          ]}
-        >
-          <DatePicker
-            precision='minute'
+              message: 'Please enter meeting title'
+            }]}>
+            <Input placeholder='' style={{'--color': '#fff'}} />
+          </Form.Item>
+          <Form.Item name='shortTitle' label='symbol'>
+            <Input placeholder='' style={{'--color': '#fff'}} />
+          </Form.Item>
+          <Form.Item
+            name='image'
+            label='Upload Image'
+            rules={[
+              {
+                required: true,
+                message: 'Please upload a face picture'
+              }
+            ]}
           >
-            {value => {
-              return value ? dayjs(value).format('YYYY-MM-DD HH:mm') : '请选择时间'
-            }
-            }
-          </DatePicker>
-        </Form.Item>
-        <Form.Item
-          name='address'
-          label='Location'
-          rules={[
-            {
-              required: true,
-              message: 'Please enter meeting location'
-            }
-          ]}
-        >
-          <Input placeholder='' />
-        </Form.Item>
-        <Form.Item
-          name='detail'
-          label='Description'
-          
-        >
-          <TextArea
-            maxLength={500}
-            rows={3}
-            showCount
-          />
-        </Form.Item>
-        <Form.Item
-          name='type'
-          label='Select your activite type'
-          rules={[
-            {
-              required: true,
-              message: 'Please select a meeting type'
-            }
-          ]}
-        >
-            <Radio.Group>
-              <Space direction='vertical'>
-                <Radio value='1'>ordinary</Radio>
-                <Radio value='2'>fission</Radio>
-                <Radio value='3'>secret</Radio>
-                <Radio value='4'>invite</Radio>
-              </Space>
-            </Radio.Group>
-        </Form.Item>
-        <Form.Item
-          required
-          rules={[
-            {
-              min: 1,
-              type: 'integer',
-              transform(value) {
-                return Number(value);
-              },
-              message: "Enter an integer greater than 0"
-            }
-          ]}
-          name='price'
-          label='fare'
-        >
-          <Input placeholder='Enter an integer greater than 0' type="integer"  />
-        </Form.Item>
-        <Form.Item
-          required
-          rules={[
-            {
-              min: 1,
-              type: 'integer',
-              transform(value) {
-                return Number(value);
-              },
-              message: "请Enter an integer greater than 0"
-            }
-          ]}
-          name='maxInvite'
-          label='total number of people'
-        >
-          <Input placeholder='Please enter the maximum number of invitees' type="integer"  />
-        </Form.Item>
-      </Form>
+            <ImageUploader
+              value={fileList}
+              onChange={setFileList}
+              upload={uploadFun}
+              maxCount={1}
+              imageFit="contain"
+              showUpload={fileList.length < 1}
+              onCountExceed={exceed => {
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name='time'
+            label='Time'
+            trigger='onConfirm'
+            onClick={(e, datePickerRef: RefObject<DatePickerRef>) => {
+              datePickerRef.current?.open()
+            }}
+            rules={[
+              {
+                required: true,
+                message: 'Please select a meeting time'
+              }
+            ]}
+          >
+            <DatePicker
+              precision='minute'
+            >
+              {value => {
+                return value ? dayjs(value).format('YYYY-MM-DD HH:mm') : '请选择时间'
+              }
+              }
+            </DatePicker>
+          </Form.Item>
+          <Form.Item
+            name='address'
+            label='Location'
+            rules={[
+              {
+                required: true,
+                message: 'Please enter meeting location'
+              }
+            ]}
+          >
+            <Input placeholder='' style={{'--color': '#fff'}} />
+          </Form.Item>
+          <Form.Item
+            name='detail'
+            label='Description'
+            
+          >
+            <TextArea
+              style={{'--color': '#fff'}}
+              maxLength={500}
+              rows={3}
+              showCount
+            />
+          </Form.Item>
+          <Form.Item
+            name='type'
+            label='Select your activite type'
+            rules={[
+              {
+                required: true,
+                message: 'Please select a meeting type'
+              }
+            ]}
+          >
+              <Radio.Group>
+                <Space direction='vertical' block={true}>
+                  {/* <Radio value='1'>ordinary</Radio>
+                  <Radio value='2'>fission</Radio>
+                  <Radio value='3'>secret</Radio>
+                  <Radio value='4'>invite</Radio> */}
+                  <Selector
+                    columns={2}
+                    style={{
+                      '--border-radius': '8px',
+                      '--border': 'solid rgba(255, 255, 255, 0.5) 1px',
+                      '--checked-border': 'solid #3E89DF 1px',
+                      '--padding': '10px 24px',
+                      '--color': 'transparent',
+                      '--checked-color': 'rgba(90, 117, 255, 0.2)',
+                      '--text-color': '#fff',
+                      '--checked-text-color': '#fff'
+                    }}
+                    showCheckMark={false}
+                    options={[
+                      {
+                        label: 'ordinary',
+                        value: '1',
+                      },
+                      {
+                        label: 'fission',
+                        value: '2',
+                      },
+                      {
+                        label: 'secret',
+                        value: '3',
+                      },
+                      {
+                        label: 'invite',
+                        value: '4',
+                      },
+                    ]}
+                    defaultValue={['1']}
+                  />
+                </Space>
+              </Radio.Group>
+          </Form.Item>
+          <Form.Item
+            required
+            rules={[
+              {
+                min: 1,
+                type: 'integer',
+                transform(value) {
+                  return Number(value);
+                },
+                message: "Enter an integer greater than 0"
+              }
+            ]}
+            name='price'
+            label='fare'
+          >
+            <Input placeholder='Enter an integer greater than 0' style={{'--color': '#fff'}} type="integer"  />
+          </Form.Item>
+          <Form.Item
+            required
+            rules={[
+              {
+                min: 1,
+                type: 'integer',
+                transform(value) {
+                  return Number(value);
+                },
+                message: "Enter an integer greater than 0"
+              }
+            ]}
+            name='maxInvite'
+            label='total number of people'
+          >
+            <Input style={{'--color': '#fff'}} placeholder='Please enter the maximum number of invitees' type="integer"  />
+          </Form.Item>
+        </Form>
+      </div>
       {showCropper ? <ImageCrop confirmCb={confirmCb} url={cropperUrl}></ImageCrop> : null}
       {showLoading ? <Mask>
         <div className={styles.loadingBox}>

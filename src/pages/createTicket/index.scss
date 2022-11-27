@@ -1,0 +1,22 @@
+
+.create-ticket-form-wrap {
+  position: relative;
+  z-index: 2;
+  .adm-list-body {
+    background: transparent;
+  }
+  .adm-list-header {
+    margin-left: 32px;
+    padding: 20px 0 16px 0;
+    font-size: 16px;
+    line-height: 18px;
+    color: #fff;
+    font-weight: bold;
+  }
+  .adm-list-item {
+    background: transparent;
+  }
+  .adm-form-item-label {
+    color: #fff;
+  }
+}
