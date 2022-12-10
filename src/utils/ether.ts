@@ -1,6 +1,8 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import { ethers } from 'ethers';
+import { hexlify } from 'ethers/lib/utils'
 import config from '../config/app'
+import CosmoTool from './cosmo/main'
 // 会议abi
 // export const IJunoabi = [
 //   `function HoldMeeting(
@@ -57,8 +59,28 @@ export const INymphabi = [
 
 export const initProvide = async () => {
   // 初始化合约
-  const provider = await detectEthereumProvider();
+  setTimeout(async () => {
+    const a = await CosmoTool.applyPermission()
+    const address = await CosmoTool.getAccount();
+    console.log(address)
+    const list = await CosmoTool.chromeTool.contractCall(
+      'gx1urhmu309j220ravsr90efc85yfxty7ttvjp0f3',
+      'Meetings(address)',
+      [address]
+    );
+    console.log(address, list, hexlify(Number(list)))
+  }, 3000)
+  const provider = (window as any).cosmoWallet;
   if (provider) {
+    (window as any).cosmoWallet.applyPermission().then((d : any) => {
+      console.log(2222, d);
+    }).catch((e: any) => {
+      console.log(2222, e);
+    })
+    (window as any).cosmoWallet.getPermission().then((d: any) => {
+      console.log(d);
+    })
+    console.log(222)
     const web3Provider = new ethers.providers.Web3Provider(provider);
     const contract = new ethers.Contract(config.CONTRACT_ADRESS, IJunoabi, web3Provider);
     return { contract, web3Provider };

@@ -9,7 +9,8 @@ import discord from '../../assert/discord.png';
 import avatar from '../../assert/avatar.png';
 import { observer } from 'mobx-react';
 import stores from '../../store';
-
+import i18n from '../../i18n';
+// import cosmo from 'cosmo-wallet-tool';
 
 function App() {
   let navigate = useNavigate();
@@ -26,7 +27,18 @@ function App() {
   const gotoConnect = () => {
     navigate("/connect");
   };
-
+  const con = async () => {
+    console.log((window as any).cosmoWallet)
+    const data = await (window as any).cosmoWallet.isWallet;
+    console.log((window as any).cosmoWallet.getPermission);
+    const result = await (window as any).cosmoWallet.getPermission(['*'])
+    (window as any).cosmoWallet.getAccount().then((d: any) => {
+      console.log(d)
+    }).catch((err: any)=> {
+      console.log(err)
+    })
+    console.log(data, result)
+  }
   const connectButton = async () => {
     initProvide().then(async ({ web3Provider }) => {
       if (web3Provider) {
@@ -43,13 +55,13 @@ function App() {
       })
     })
   };
-
+  console.log(i18n)
 
   return (
     <div className={styles.container}>
       <div className={styles.title}>
         <img src={icon} alt="" />
-        <div className={styles.titleText}>Welcome to Ticken</div>
+        <div className={styles.titleText}>{i18n.t('home.title')}</div>
       </div>
       <div className={styles.summary}>
         Ticken is a ticket tool product that combines NFT social play. Here.
