@@ -17,6 +17,7 @@ import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init,  CanInvite, CanS
 import { BigNumber, ethers } from "ethers";
 import axios from "axios";
 import dayjs from "dayjs";
+import i18n from '../../i18n';
 import { useNavigate } from "react-router-dom";
 interface TicketInfo {
   description: string;
@@ -107,7 +108,7 @@ const Qr = () => {
       .then(() => {
         Toast.show({
           icon: "success",
-          content: "Verification success",
+          content: i18n.t('qrcode.success'),
         });
         localStorage.setItem(`${cid}-${tid}`.toString().toLowerCase(), "true");
         setIsSign(true);
@@ -116,7 +117,7 @@ const Qr = () => {
         console.log(err);
         Toast.show({
           icon: "error",
-          content: "Verification failure",
+          content: i18n.t("qrcode.error"),
         });
       });
   };
@@ -133,7 +134,7 @@ const Qr = () => {
       .then(() => {
         Toast.show({
           icon: "success",
-          content: "Join successfully, jump to the homepage after 3s",
+          content: i18n.t("qrcode.joinSuccess"),
         });
         setTimeout(() => {
           // 跳转首页
@@ -143,7 +144,7 @@ const Qr = () => {
       .catch((err: any) => {
         Toast.show({
           icon: "error",
-          content: "mint error, please try again",
+          content: i18n.t("qrcode.joinError"),
         });
       });
   };
@@ -176,13 +177,13 @@ const Qr = () => {
         }
         Toast.show({
           icon: "error",
-          content: "Please install MetaMask!",
+          content: i18n.t("qrcode.initError"),
         });
         return;
       }).catch(() => {
         Toast.show({
           icon: "error",
-          content: "Please install MetaMask!",
+          content: i18n.t("qrcode.initError"),
         });
         return;
       })
@@ -222,23 +223,23 @@ const Qr = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        {_isSign && <div className={styles.written}>written off</div>}
+        {_isSign && <div className={styles.written}>{i18n.t("qrcode.writeOff")}</div>}
         <img width={335} height={157} src={info?.image && renderImg(info?.image)} alt="" />
         <div>
           <div className={styles.title}>
-            <h1>{info?.name || "Token Dance"}</h1>
+            <h1>{info?.name || "TICKEN"}</h1>
             {_canSign && !_isSign && mode === "ticket" && (
               <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
             )}
           </div>
-          <p>{info?.description} 131312321</p>
+          <p>{info?.description}</p>
         </div>
       </div>
       <div className={styles.meetInfo}>
         <div style={{ marginBottom: "12px" }} className={styles.infoItem}>
           <label>
             <img width={21} height={21} src={Where} alt="" />
-            Where
+            {i18n.t("qrcode.where")}
           </label>
           <span>{info?.location}</span>
         </div>
@@ -246,7 +247,7 @@ const Qr = () => {
         <div className={styles.infoItem}>
           <label>
             <img width={21} height={21} src={When} alt="" />
-            When
+            {i18n.t("qrcode.when")}
           </label>
           <span>
             {info?.time &&
@@ -260,20 +261,20 @@ const Qr = () => {
           <label>Creator</label>
           <span className={styles.elc}>{info?.owner || "-"}</span>
         </p>
-        <p>
+        {/* <p>
           <label>Token Standard</label>
           <span>ERC721</span>
         </p>
         <p>
           <label>Asset contract</label>
           <span>Nymph</span>
-        </p>
-        <p>
+        </p> */}
+        {/* <p>
           <label style={{ wordBreak: "keep-all", width: "113px" }}>
             Token id
           </label>
           <span className={styles.elc}>{1}</span>
-        </p>
+        </p> */}
         {mode === "sign" && (
           <p>
             <label style={{ wordBreak: "keep-all", width: "113px" }}>
@@ -297,14 +298,14 @@ const Qr = () => {
       <div className={styles.footer}>
         {mode === "mint" && _mint && (
           <Button onClick={_fissionMint} block color="primary" size="large">
-            Get it
+            {i18n.t("qrcode.getId")}
           </Button>
         )}
         {
           // 可以加入&没有登记过
           mode === "sign" && _canSign && !_isSign && (
             <Button onClick={Sign} block color="primary" size="large">
-              Write off
+              {i18n.t("qrcode.writeOff")}
             </Button>
           )
         }
@@ -312,13 +313,13 @@ const Qr = () => {
           // 可以加入&没有登记过
           mode === "sign" && _canSign && _isSign && (
             <p className={styles.signTip}>
-              The other party has already registered
+              {i18n.t("qrcode.Registered")}
             </p>
           )
         }
         {mode === "ticket" && caninvite && (
           <Button onClick={copy} block color="primary" size="large">
-            Invite
+            {i18n.t("qrcode.invite")}
           </Button>
         )}
         {/* {

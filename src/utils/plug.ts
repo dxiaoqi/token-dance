@@ -141,7 +141,7 @@ export async function toSign(address: string, cid: string) {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   const _address = await CosmoTool.getAccount();
-  const list = await CosmoTool[reqTool].contractCall(
+  const list = await CosmoTool[reqTool].contractSend(
     address,
     'Sign(address)',
     [
