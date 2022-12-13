@@ -12,6 +12,8 @@ import qrCode from "../../assert/qrcode.png";
 import { Button, Dialog, Toast } from "antd-mobile";
 import { Etherabi } from "../../types/index";
 import { initProvide, INymphabi } from "../../utils/ether";
+import CosmoTool from "../../utils/cosmo/main"
+import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init,  CanInvite, CanSign, IsSign, toSign, balanceOf, fissionMint} from '../../utils/plug'
 import { BigNumber, ethers } from "ethers";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -64,9 +66,9 @@ const Qr = () => {
   };
   const canInvite = async () => {
     // 判断当前用户是否可以邀请, 票id,当前id
-    const can = await req?.CanInvite?.();
+    const can = await CanInvite(tid);
     console.log("可以邀请", can, req);
-    setCanInvite(can as boolean);
+    setCanInvite(can as any);
   };
   const copy = () => {
     const url =
@@ -81,8 +83,8 @@ const Qr = () => {
   };
 
   const canSign = async () => {
-    const can = await req.CanSign?.(cid);
-    console.log("可以登录", can, req);
+    const can = CanSign(tid, cid);
+    console.log("可以签到", can, req);
     setSign(true);
   };
   const isSign = async () => {
@@ -94,16 +96,15 @@ const Qr = () => {
       return true;
     }
     // return IsSign 参赛者id
-    const can = await req?.IsSign?.(cid);
+    const can = await IsSign(tid, cid);
     console.log(666, can);
-    setIsSign(can as boolean);
+    setIsSign(can as any);
     return can;
   };
   const Sign = () => {
     // 验证 Sign(cid)
-    signer
-      ?.Sign?.(cid)
-      .then((d: number) => {
+    toSign(tid, cid)
+      .then(() => {
         Toast.show({
           icon: "success",
           content: "Verification success",
@@ -120,7 +121,7 @@ const Qr = () => {
       });
   };
   const canMint = async () => {
-    const can = await req?.balanceOf?.(uid);
+    const can = await balanceOf(tid, uid);
     console.log("是否mint", can?.toString());
     setCanMint(Number(can?.toString()) === 0);
   };
@@ -128,8 +129,7 @@ const Qr = () => {
     // 加入
     console.log("fission mint hid", hid);
     console.log("signer address", signer.address);
-    signer
-      ?._fissionMint?.(hid)
+    fissionMint(tid, hid)
       .then(() => {
         Toast.show({
           icon: "success",
@@ -148,45 +148,45 @@ const Qr = () => {
       });
   };
   const initTicket = async () => {
-    if (!window.ethereum) {
-      Toast.show({
-        icon: "error",
-        content: "Please install MetaMask!",
-      });
-      return;
-    }
-    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(
-      (tid || "")?.toString(),
-      INymphabi,
-      web3Provider
-    );
-    req = contract as unknown as Etherabi;
-    signer = web3Provider.getSigner();
-    signer = contract.connect(signer);
-
-    // 获取ticket的ipfs地址
-    const ipfsUri = await contract?.tokenURI?.(1);
-    // 去获取ticket的源信息
-    const { data } = await axios.get(ipfsUri);
-    // 获取ticket的举办时间
-    const time = await contract?.HoldTime();
-    // 获取票的主办者
-    const owner = await contract?.owner();
-    console.log(data);
-    setInfo({
-      ...data,
-      time,
-      owner,
-    });
-    const accounts = await web3Provider.send("eth_requestAccounts", []);
-    console.log(accounts);
-    uid = accounts?.[0];
-    await canInvite();
-    await canSign();
-    await isSign();
-    await canMint();
-    console.log(accounts);
+    setTimeout(async () => {
+      init().then(async (d) => {
+        if (d) {
+          // 获取ticket的ipfs地址
+          const ipfsUri = await tokenURI(tid);
+          // 去获取ticket的源信息
+          const { data } = await axios.get(ipfsUri as any);
+          // 获取ticket的举办时间
+          const time = await HoldTime(tid);
+          // 获取票的主办者
+          const owner = await isOwner(tid);
+          console.log(data);
+          setInfo({
+            ...data,
+            time,
+            owner,
+          });
+          const accounts =  await CosmoTool.getAccount();
+          console.log(accounts);
+          const uid = accounts;
+          await canInvite();
+          await canSign();
+          await isSign();
+          await canMint();
+          console.log(accounts);
+        }
+        Toast.show({
+          icon: "error",
+          content: "Please install MetaMask!",
+        });
+        return;
+      }).catch(() => {
+        Toast.show({
+          icon: "error",
+          content: "Please install MetaMask!",
+        });
+        return;
+      })
+    }, 3000)
   };
   useEffect(() => {
     // 链接钱包地址，根据当前用户拉票据信息
@@ -223,7 +223,7 @@ const Qr = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         {_isSign && <div className={styles.written}>written off</div>}
-        <img width={100} height={100} src={info?.image && renderImg(info?.image)} alt="" />
+        <img width={335} height={157} src={info?.image && renderImg(info?.image)} alt="" />
         <div>
           <div className={styles.title}>
             <h1>{info?.name || "Token Dance"}</h1>
@@ -231,7 +231,7 @@ const Qr = () => {
               <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
             )}
           </div>
-          <p>{info?.description}</p>
+          <p>{info?.description} 131312321</p>
         </div>
       </div>
       <div className={styles.meetInfo}>
@@ -284,7 +284,7 @@ const Qr = () => {
         )}
       </div>
       <div className={styles.line}></div>
-      {mode === "ticket" && (
+      {/* {mode === "ticket" && (
         <div className={styles.invite}>
           {[11, 22].map((e) => (
             <div className={styles.avatar}>
@@ -293,7 +293,7 @@ const Qr = () => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
       <div className={styles.footer}>
         {mode === "mint" && _mint && (
           <Button onClick={_fissionMint} block color="primary" size="large">

@@ -1,5 +1,5 @@
-// import { bech32 } from 'bech32';
-// import { hexToBytes, bytesToHex } from 'web3-utils';
+import { bech32 } from 'bech32';
+import { hexToBytes, bytesToHex } from 'web3-utils';
 import walletTool, { CosmoWalletWalletTool } from './main.wallet';
 import chromeTool, { CosmoWalletChromeTool } from './main.chrome';
 import { BroadcastTxResponse } from './types';
@@ -95,12 +95,12 @@ class CosmoTool {
 		return null;
 	}
 
-	// public addressForHexToBech32(address: string, prefix: string = 'gx'): string {
-	// 	return bech32.encode(prefix, bech32.toWords(hexToBytes(address)));
-	// }
-	// public addressForBech32ToHex(address: string, LIMIT: number = 1023): string {
-	// 	return bytesToHex(bech32.fromWords(bech32.decode(address, LIMIT).words));
-	// }
+	public addressForHexToBech32(address: string, prefix: string = 'gx'): string {
+		return bech32.encode(prefix, bech32.toWords(hexToBytes(address)));
+	}
+	public addressForBech32ToHex(address: string, LIMIT: number = 1023): string {
+		return bytesToHex(bech32.fromWords(bech32.decode(address, LIMIT).words));
+	}
 
 	public walletTool: CosmoWalletWalletTool = walletTool;
 	public chromeTool: CosmoWalletChromeTool = chromeTool;

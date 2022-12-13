@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { initProvide } from '../../utils/ether';
+import CosmoTool from '../../utils/cosmo/main';
+import { init } from '../../utils/plug'
 import { Button, Modal, Toast } from 'antd-mobile';
 import { useNavigate } from "react-router-dom";
 import styles from './index.module.scss';
@@ -27,24 +29,12 @@ function App() {
   const gotoConnect = () => {
     navigate("/connect");
   };
-  const con = async () => {
-    console.log((window as any).cosmoWallet)
-    const data = await (window as any).cosmoWallet.isWallet;
-    console.log((window as any).cosmoWallet.getPermission);
-    const result = await (window as any).cosmoWallet.getPermission(['*'])
-    (window as any).cosmoWallet.getAccount().then((d: any) => {
-      console.log(d)
-    }).catch((err: any)=> {
-      console.log(err)
-    })
-    console.log(data, result)
-  }
+
   const connectButton = async () => {
-    initProvide().then(async ({ web3Provider }) => {
-      if (web3Provider) {
-        const accounts = await web3Provider.send("eth_requestAccounts", []);
-        user.setUser({ address: accounts[0] });
-        localStorage.setItem("walletAddress", accounts[0]);
+    init().then(async (address) => {
+      if (address) {
+        user.setUser({ address: address });
+        localStorage.setItem("walletAddress", address);
         Modal.clear();
         navigate("/list");
       }

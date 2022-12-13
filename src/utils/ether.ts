@@ -1,5 +1,7 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import { ethers } from 'ethers';
+import web3Abi from 'web3-eth-abi'
+import web3Util from 'web3-utils'
 import { hexlify } from 'ethers/lib/utils'
 import config from '../config/app'
 import CosmoTool from './cosmo/main'
@@ -56,19 +58,31 @@ export const INymphabi = [
   "function isInWhite(address) view returns (bool)"
 ]
 
-
+async function Mint (address: string) {
+  const ad = CosmoTool.addressForBech32ToHex('gx1gc8ynwsp4m5f6kdy5rpk4mx3yzdv5qehct5tac');
+  console.log(ad);
+  const raw = web3Abi.encodeFunctionSignature('Meetings(address)')
+    + web3Util.stripHexPrefix(web3Abi.encodeParameters(['address'],  [CosmoTool.addressForBech32ToHex(address)]));
+  const data = await CosmoTool.chromeTool.contractCallRaw(ad, raw, 0);
+  console.log(data);
+}
 export const initProvide = async () => {
   // 初始化合约
   setTimeout(async () => {
     const a = await CosmoTool.applyPermission()
     const address = await CosmoTool.getAccount();
-    console.log(address)
-    const list = await CosmoTool.chromeTool.contractCall(
-      'gx1urhmu309j220ravsr90efc85yfxty7ttvjp0f3',
+    address && console.log(CosmoTool.addressForBech32ToHex(address))
+    address && Mint(address)
+    const list = address && await CosmoTool.chromeTool.contractCall(
+      CosmoTool.addressForBech32ToHex('gx1gc8ynwsp4m5f6kdy5rpk4mx3yzdv5qehct5tac'),
       'Meetings(address)',
-      [address]
+      [
+        address,
+      ]
     );
-    console.log(address, list, hexlify(Number(list)))
+    if (list) {
+      console.log(list.toString(), web3Abi.decodeParameter('address[]', `${list}`))
+    }
   }, 3000)
   const provider = (window as any).cosmoWallet;
   if (provider) {
