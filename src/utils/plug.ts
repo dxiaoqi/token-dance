@@ -1,6 +1,7 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import { ethers } from 'ethers';
 import web3Abi from 'web3-eth-abi'
+import { Divider, Toast, Dialog } from "antd-mobile";
 import web3Util from 'web3-utils'
 import { hexlify } from 'ethers/lib/utils'
 import CosmoTool from './cosmo/main';
@@ -15,42 +16,46 @@ export async function init() {
 export async function Meeting() {
   const isWallet = await CosmoTool.isWallet
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
-  const address = await CosmoTool.getAccount();
-  console.log(isWallet, address)
-  const list = await CosmoTool[reqTool].contractCall(
+  let address = await CosmoTool.getAccount();
+  address = isWallet ? CosmoTool.addressForBech32ToHex(address || '') : address;
+  let list = await CosmoTool[reqTool].contractCall(
     CosmoTool.addressForBech32ToHex(CON_ADDR),
     'Meetings(address)',
     [
       address,
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('address[]', `${list}`) || [];
 }
 
 export async function tokenURI(address: string) {
   const isWallet = await CosmoTool.isWallet
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
-  const list = await CosmoTool[reqTool].contractCall(
+  let list = await CosmoTool[reqTool].contractCall(
     address,
     'tokenURI(uint256)',
     [
       1,
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('string', `${list}`) || '';
 }
 
 export async function isInWhite() {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
-  const _address = await CosmoTool.getAccount();
-  const list = await CosmoTool[reqTool].contractCall(
+  let address = await CosmoTool.getAccount();
+  address = isWallet ? CosmoTool.addressForBech32ToHex(address || '') : address;
+  let list = await CosmoTool[reqTool].contractCall(
     CosmoTool.addressForBech32ToHex(CON_ADDR),
     'isInWhite(address)',
     [
-      _address,
+      address,
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('bool', `${list}`) || false;
 }
 
@@ -58,12 +63,13 @@ export async function HoldTime(address: string) {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   const _address = await CosmoTool.getAccount();
-  const list = await CosmoTool[reqTool].contractCall(
+  let list = await CosmoTool[reqTool].contractCall(
     address,
     'HoldTime()',
     [
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('uint256', `${list}`)
 }
 
@@ -71,12 +77,13 @@ export async function isOwner(address: string) {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   const _address = await CosmoTool.getAccount();
-  const list = await CosmoTool[reqTool].contractCall(
+  let list = await CosmoTool[reqTool].contractCall(
     address,
     'owner()',
     [
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('address', `${list}`)
 }
 
@@ -85,12 +92,13 @@ export async function CanInvite(address: string) {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   const _address = await CosmoTool.getAccount();
-  const list = await CosmoTool[reqTool].contractCall(
+  let list = await CosmoTool[reqTool].contractCall(
     address,
     'CanInvite()',
     [
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('bool', `${list}`)
 }
 
@@ -98,13 +106,15 @@ export async function CanSign(address: string, cid: string) {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   const _address = await CosmoTool.getAccount();
-  const list = await CosmoTool[reqTool].contractCall(
+  const _cid = isWallet ? CosmoTool.addressForBech32ToHex(cid) : cid;
+  let list = await CosmoTool[reqTool].contractCall(
     address,
     'CanSign(address)',
     [
-      cid
+      _cid
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('bool', `${list}`)
 }
 
@@ -112,13 +122,15 @@ export async function IsSign(address: string, cid: string) {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   const _address = await CosmoTool.getAccount();
-  const list = await CosmoTool[reqTool].contractCall(
+  const _cid = isWallet ? CosmoTool.addressForBech32ToHex(cid) : cid;
+  let list = await CosmoTool[reqTool].contractCall(
     address,
     'IsSign(address)',
     [
-      cid
+      _cid
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('bool', `${list}`)
 }
 
@@ -141,13 +153,15 @@ export async function balanceOf(address: string, cid: string) {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   const _address = await CosmoTool.getAccount();
-  const list = await CosmoTool[reqTool].contractCall(
+  const _cid = isWallet ? CosmoTool.addressForBech32ToHex(cid) : cid;
+  let list = await CosmoTool[reqTool].contractCall(
     address,
     'balanceOf(address)',
     [
-      cid
+      _cid
     ]
   );
+  list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('uint256', `${list}`)
 }
 
@@ -159,7 +173,7 @@ export async function fissionMint(address: string, cid: string) {
     address,
     '_fissionMint(address)',
     [
-      cid
+      _cid
     ]
   );
 }
