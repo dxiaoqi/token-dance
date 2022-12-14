@@ -6,13 +6,13 @@ import { Button, Modal, Toast } from 'antd-mobile';
 import { useNavigate } from "react-router-dom";
 import styles from './index.module.scss';
 import icon from '.././../assert/icon.png';
-import twitter from '../../assert/twitter.png';
-import discord from '../../assert/discord.png';
 import avatar from '../../assert/avatar.png';
 import { observer } from 'mobx-react';
 import stores from '../../store';
 import i18n from '../../i18n';
 import wheelImg from ".././../assert/music/drive.png";
+import telegram from '../../assert/music/telegram.png';
+import twitter from '../../assert/music/twitter.png';
 // import cosmo from 'cosmo-wallet-tool';
 // i18n.t('home.title')
 
@@ -68,14 +68,31 @@ function App() {
         协议，致力于高性能信息数据交互的应用场景。
       </div>
       <div className={styles.btnWrap}>
-        <div>111</div>
+        <div className={styles.btnIcon}></div>
         <div>查阅门票</div>
       </div>
       <div className={styles.contactWrap}>
         <div className={styles.contact}>
           如何联系我们
         </div>
+        <div className={styles.contactList}>
+          <div className={styles.contactItem}>
+            <img className={styles.contactIcon} src={telegram} alt="" />
+            <div className={styles.contactIconText}>
+              <div className={styles.contactIconTextTitle}>Telegram</div>
+              <div className={styles.contactIconTextDetail}>@plugchain</div>
+            </div>
+          </div>
+          <div className={styles.contactItem}>
+            <img className={styles.contactIcon} src={twitter} alt="" />
+            <div className={styles.contactIconText}>
+              <div className={styles.contactIconTextTitle}>Twitter</div>
+              <div className={styles.contactIconTextDetail}>@Plugchainclub</div>
+            </div>
+          </div>
+        </div>
       </div>
+
 
     </div>
   );

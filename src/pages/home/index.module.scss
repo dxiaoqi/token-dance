@@ -93,12 +93,22 @@
     border-radius: 5px;
     margin: 20px 0;
     padding: 5px;
+    .btnIcon{
+      background-image:url('../../assert/music/btnIcon.png');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      width: 20px;
+      height: 10px;
+      margin-right: 10px;
+    }
   }
 
   .contactWrap {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+
     .contact {
       text-align: center;
       background-image: url('../../assert/music/contctIcon.png');
@@ -110,6 +120,49 @@
       color: aliceblue;
       width: 60%;
     }
+
+    .contactList {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+
+      .contactItem {
+        display: flex;
+
+        .contactIcon {
+          width: 36px;
+          height: 36px;
+          margin-right: 12px;
+        }
+
+        .contactIconText {
+          .contactIconTextTitle {
+            width: 59px;
+            height: 22px;
+            font-family: 'PingFang SC';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 22px;
+            text-transform: capitalize;
+            color: #FFFFFF;
+          }
+
+          .contactIconTextDetail {
+            width: 82px;
+            height: 18px;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 18px;
+            color: #FFFFFF;
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+
   }
 
 
