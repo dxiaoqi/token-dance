@@ -8,3 +8,7 @@ module.exports = function override(config, env) {
   // 一定要把新的 config 返回
   return config;
 }
+
+const { removeModuleScopePlugin } = require('customize-cra')
+
+module.exports = removeModuleScopePlugin()
