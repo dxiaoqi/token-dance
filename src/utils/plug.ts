@@ -122,30 +122,17 @@ export async function IsSign(address: string, cid: string) {
   return web3Abi.decodeParameter('bool', `${list}`)
 }
 
-// export async function IsSign(address: string) {
-//   const isWallet = await CosmoTool.isWallet;
-//   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
-//   const _address = await CosmoTool.getAccount();
-//   const list = await CosmoTool[reqTool].contractCall(
-//     address,
-//     'IsSign(address)',
-//     [
-//       _address
-//     ]
-//   );
-//   return web3Abi.decodeParameter('address', `${list}`)
-// }
-
 export async function toSign(address: string, cid: string) {
   // 要用send
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
-  const _address = await CosmoTool.getAccount();
+  const _cid = isWallet ? CosmoTool.addressForBech32ToHex(cid) : cid;
+
   const list = await CosmoTool[reqTool].contractSend(
     address,
     'Sign(address)',
     [
-      cid
+      _cid
     ]
   );
 }
@@ -167,12 +154,35 @@ export async function balanceOf(address: string, cid: string) {
 export async function fissionMint(address: string, cid: string) {
   const isWallet = await CosmoTool.isWallet;
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
-  const _address = await CosmoTool.getAccount();
-  await CosmoTool[reqTool].contractCall(
+  const _cid = isWallet ? CosmoTool.addressForBech32ToHex(cid) : cid;
+  await CosmoTool[reqTool].contractSend(
     address,
     '_fissionMint(address)',
     [
       cid
     ]
   );
+}
+
+
+export async function HoldMeeting(title: string, shortTitle: string, meta: string, time: number, maxInvite: number, type: number, price: number) {
+  const isWallet = await CosmoTool.isWallet;
+  const reqTool = isWallet ? 'walletTool' : 'chromeTool';
+  const _address = await CosmoTool.getAccount();
+  debugger
+  const list = await CosmoTool[reqTool].contractSend(
+    CosmoTool.addressForBech32ToHex(CON_ADDR),
+    'HoldMeeting(string,string,string,uint256,uint256,uint8,uint256)',
+    [
+      title,
+      shortTitle,
+      meta,
+      time,
+      maxInvite,
+      type,
+      price
+    ]
+  );
+  console.log(list);
+  return web3Abi.decodeParameter('address', `${list}`)
 }

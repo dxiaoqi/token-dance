@@ -77,6 +77,7 @@ const Qr = () => {
       `/v2/#/qrcode?mode=mint&tid=${tid}&cid=${uid}&hid=${uid}`;
     Dialog.alert({
       content: <p style={{ padding: "10px", wordBreak: "break-all" }}>{url}</p>,
+      confirmText: i18n.t("qrcode.close"),
       onConfirm: () => {
         console.log("Confirmed");
       },
@@ -84,7 +85,7 @@ const Qr = () => {
   };
 
   const canSign = async () => {
-    const can = CanSign(tid, cid);
+    const can = await CanSign(tid, cid);
     console.log("可以签到", can, req);
     setSign(true);
   };
@@ -152,6 +153,9 @@ const Qr = () => {
     setTimeout(async () => {
       init().then(async (d) => {
         if (d) {
+          const accounts =  await CosmoTool.getAccount();
+          console.log(accounts);
+          uid = accounts || '';
           // 获取ticket的ipfs地址
           const ipfsUri = await tokenURI(tid);
           // 去获取ticket的源信息
@@ -166,19 +170,17 @@ const Qr = () => {
             time,
             owner,
           });
-          const accounts =  await CosmoTool.getAccount();
-          console.log(accounts);
-          const uid = accounts;
           await canInvite();
           await canSign();
           await isSign();
           await canMint();
-          console.log(accounts);
+          console.log(CosmoTool.addressForBech32ToHex(uid || ''));
+        } else {
+          Toast.show({
+            icon: "error",
+            content: i18n.t("qrcode.initError"),
+          });
         }
-        Toast.show({
-          icon: "error",
-          content: i18n.t("qrcode.initError"),
-        });
         return;
       }).catch(() => {
         Toast.show({
@@ -224,7 +226,9 @@ const Qr = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         {_isSign && <div className={styles.written}>{i18n.t("qrcode.writeOff")}</div>}
-        <img width={335} height={157} src={info?.image && renderImg(info?.image)} alt="" />
+        <div className={styles.ticket_bg}>
+          <img width={335} height={157} src={info?.image && renderImg(info?.image)} alt="" />
+        </div>
         <div>
           <div className={styles.title}>
             <h1>{info?.name || "TICKEN"}</h1>
@@ -298,12 +302,12 @@ const Qr = () => {
       <div className={styles.footer}>
         {mode === "mint" && _mint && (
           <Button onClick={_fissionMint} block color="primary" size="large">
-            {i18n.t("qrcode.getId")}
+            {i18n.t("qrcode.getIt")}
           </Button>
         )}
         {
           // 可以加入&没有登记过
-          mode === "sign" && _canSign && !_isSign && (
+          mode === "sign" && _canSign && !_isSign && (CosmoTool.addressForBech32ToHex(uid || '') == (info?.owner || '').toString()) && (
             <Button onClick={Sign} block color="primary" size="large">
               {i18n.t("qrcode.writeOff")}
             </Button>
@@ -343,7 +347,7 @@ const Qr = () => {
         actions={[
           {
             key: "confirm",
-            text: "close",
+            text: i18n.t("qrcode.close"),
           },
         ]}
       />

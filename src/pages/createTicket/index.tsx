@@ -34,10 +34,7 @@ import './index.scss';
 import ImageCrop from "./imageCrop";
 import type { DatePickerRef } from "antd-mobile/es/components/date-picker";
 import { ImageUploadItem } from "antd-mobile/es/components/image-uploader";
-import { IJunoabi, INymphabi } from "../../utils/ether";
-import { Etherabi } from "../../types/index";
-import config from "../../config/app";
-
+import { HoldMeeting } from '../../utils/plug'
 import createTicketBgImage from '../../assert/create-ticket-bg.png';
 import createTicketButtonBg from '../../assert/create-ticket-button-bg.png';
 // import { FormInstance } from "rc-field-form";
@@ -146,20 +143,10 @@ const CreateTicket = () => {
     if (!(metadata as any).ipnft) {
       return createFailed();
     }
-
-    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await web3Provider.send("eth_requestAccounts", []);
-    let signer = web3Provider.getSigner();
-    // 0x3dea2B63093956728D72438c4cC0ED8386b98cA0
-    const contract = new ethers.Contract(
-      config.CONTRACT_ADRESS,
-      IJunoabi,
-      signer
-    );
+ 
     // 会议名，会议缩写，metadata url，举办时间（秒级时间戳），人数限制，会议类型，票价
     console.log("before hold");
-    const holdMeetingResp = await contract
-      ?.HoldMeeting(
+    const holdMeetingResp: any = await HoldMeeting(
         values.title,
         values.shortTitle || "",
         `https://${(metadata as any).ipnft}.ipfs.nftstorage.link/metadata.json`,
@@ -247,6 +234,7 @@ const CreateTicket = () => {
         <Form
           ref={formRef}
           name="form"
+          onFieldsChange={d => console.log(d)}
           onFinish={onFinish}
           onFinishFailed={inputError}
           footer={
@@ -378,13 +366,6 @@ const CreateTicket = () => {
               },
             ]}
           >
-            <Radio.Group>
-            <Radio.Group>
-                <Space direction='vertical' block={true}>
-                  {/* <Radio value='1'>ordinary</Radio>
-                  <Radio value='2'>fission</Radio>
-                  <Radio value='3'>secret</Radio>
-                  <Radio value='4'>invite</Radio> */}
                   <Selector
                     columns={2}
                     style={{
@@ -416,11 +397,8 @@ const CreateTicket = () => {
                         value: '4',
                       },
                     ]}
-                    defaultValue={['1']}
+                    // defaultValue={['1']}
                   />
-                </Space>
-              </Radio.Group>
-            </Radio.Group>
           </Form.Item>
           <Form.Item
             required

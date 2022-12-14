@@ -14,6 +14,7 @@ export default {
     getIt: "Get it",
     writeOff: "Write Off",
     invite: "Invite",
-    Registered: "The other party has already registered"
+    Registered: "The other party has already registered",
+    close: "Close",
   }
 }
