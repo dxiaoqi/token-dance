@@ -6,13 +6,15 @@ import { Button, Modal, Toast } from 'antd-mobile';
 import { useNavigate } from "react-router-dom";
 import styles from './index.module.scss';
 import icon from '.././../assert/icon.png';
-import twitter from '../../assert/twitter.png';
-import discord from '../../assert/discord.png';
 import avatar from '../../assert/avatar.png';
 import { observer } from 'mobx-react';
 import stores from '../../store';
 import i18n from '../../i18n';
+import wheelImg from ".././../assert/music/drive.png";
+import telegram from '../../assert/music/telegram.png';
+import twitter from '../../assert/music/twitter.png';
 // import cosmo from 'cosmo-wallet-tool';
+// i18n.t('home.title')
 
 function App() {
   let navigate = useNavigate();
@@ -23,7 +25,7 @@ function App() {
       .then((con) => {
         console.log("初始合约", con);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const gotoConnect = () => {
@@ -39,90 +41,59 @@ function App() {
         navigate("/list");
       }
     }).catch((err) => {
-      Toast.show({
-        icon: 'fail',
-        content: '请安装metamask钱包或者在metamsk钱包浏览器里打开!',
-      })
     })
   };
   console.log(i18n)
 
   return (
     <div className={styles.container}>
-      <div className={styles.title}>
-        <img src={icon} alt="" />
-        <div className={styles.titleText}>{i18n.t('home.title')}</div>
+      <div className={styles.logoImages}></div>
+      <div className={styles.titleImages}></div>
+      {/* <div className={styles.wheelImages}></div> */}
+      <div className={styles.wheelImageWrap}>
+        <img src={wheelImg} className={styles.wheelImage}></img>
       </div>
-      <div className={styles.summary}>
-        Ticken is a ticket tool product that combines NFT social play. Here.
-      </div>
-      <div className={styles.list}>
-        <ul>
-          <li className={styles.item}>Everyone can start an event</li>
-          <li className={styles.item}>Each ticket is an unique NFT</li>
-          <li className={styles.item}>
-            Flexible configuration of different smart contracts, allowing events
-            to fracture quickly
-          </li>
-          <li className={styles.item}>
-            Customize the SBT of participating events to meet your multi-faceted
-            role
-          </li>
-          <li className={styles.item}>
-            Events data on the chain, leaving a good mark while allowing you to
-            gain trust even if in anonymity
-          </li>
-          <li className={styles.item}>
-            Retrospective every events, no more regrets
-          </li>
-          <li className={styles.item}>
-            Recommendation system that can explore more events and people that
-            suit you
-          </li>
+      <div className={styles.tickenIntro}>
+        <div className={styles.tickenIntroTitle}>{`Ticken是一款结合了NFT社交游戏的票务工具产品,在这里：`}</div>
+        <ul className={styles.tickenIntroContent}>
+          <li className={styles.tickenIntroItem}>票即NFT: 人人科创</li>
+          <li className={styles.tickenIntroItem}>AIGC联动: 新潮玩法</li>
+          <li className={styles.tickenIntroItem}>WEB3社交: 灵魂绑定</li>
+          <li className={styles.tickenIntroItem}>开放协议: 无限可能</li>
         </ul>
       </div>
-      <div className={styles.btn}
-        onClick={() => {
-          Modal.show({
-            content: (
-              <div className={styles.modalContainer} onClick={connectButton}>
-                <div className={styles.connectContainer}>
-                  <div className={styles.title}>Connet your Wallet</div>
-                  <div className={styles.avatarWrapper}>
-                    <img className={styles.avatar} src={avatar} />
-                    <div className={styles.description}>MetaMask</div>
-                  </div>
-                  <div className={styles.horizon}></div>
-                  <div
-                  >
-                    <div className={styles.connectTxt}>Click to authorize</div>
-                  </div>
-                </div>
-              </div>
-            ),
-            closeOnMaskClick: true,
-          })
-        }}
-      ></div>
-      <div className={styles.contact}>
-        <div className={styles.contactTitle}>How To Connect Us</div>
+      <div className={styles.plugChainIntro}>
+        PlugChain是一条高并发性、低Gas费、易拓展性为
+        核心优势的Web3公链，通过构建聚合式跨链预言机
+        协议，致力于高性能信息数据交互的应用场景。
+      </div>
+      <div className={styles.btnWrap}>
+        <div className={styles.btnIcon}></div>
+        <div>查阅门票</div>
+      </div>
+      <div className={styles.contactWrap}>
+        <div className={styles.contact}>
+          如何联系我们
+        </div>
         <div className={styles.contactList}>
           <div className={styles.contactItem}>
-            <img className={styles.contactIcon} src={discord} alt="" />
+            <img className={styles.contactIcon} src={telegram} alt="" />
             <div className={styles.contactIconText}>
-              <div className={styles.contactIconTextTitle}>Discord</div>
-              <div className={styles.contactIconTextDetail}>TokenDance</div>
+              <div className={styles.contactIconTextTitle}>Telegram</div>
+              <div className={styles.contactIconTextDetail}>@plugchain</div>
             </div>
           </div>
           <div className={styles.contactItem}>
             <img className={styles.contactIcon} src={twitter} alt="" />
             <div className={styles.contactIconText}>
               <div className={styles.contactIconTextTitle}>Twitter</div>
-              <div className={styles.contactIconTextDetail}>@TokenDance</div>
+              <div className={styles.contactIconTextDetail}>@Plugchainclub</div>
             </div>
           </div>
         </div>
       </div>
+
+
     </div>
   );
 }
