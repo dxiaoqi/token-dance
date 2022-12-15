@@ -17,6 +17,8 @@ export default {
     Registered: "The other party has already registered"
   },
   list:{
-    publish:"Publish"
+    publish:"Publish",
+    Registered: "The other party has already registered",
+    close: "Close",
   }
 }

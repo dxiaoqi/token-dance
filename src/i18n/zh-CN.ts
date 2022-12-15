@@ -17,6 +17,8 @@ export default {
     Registered: "对方已经注册"
   },
   list: {
-    publish: "发布"
+    publish: "发布",
+    Registered: "对方已经注册",
+    close: "关闭",
   }
 }

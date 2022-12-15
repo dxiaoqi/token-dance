@@ -13,7 +13,7 @@ import { Button, Dialog, Toast } from "antd-mobile";
 import { Etherabi } from "../../types/index";
 import { initProvide, INymphabi } from "../../utils/ether";
 import CosmoTool from "../../utils/cosmo/main"
-import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init,  CanInvite, CanSign, IsSign, toSign, balanceOf, fissionMint} from '../../utils/plug'
+import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init,  CanInvite, CanSign, IsSign, toSign, balanceOf, fissionMint, tokenIdOf, isSignMan } from '../../utils/plug'
 import { BigNumber, ethers } from "ethers";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -50,7 +50,8 @@ const Qr = () => {
   const [_isSign, setIsSign] = useState(false);
 
   const [_mint, setCanMint] = useState(false);
-
+  const [_canSigner, setCanSign] = useState(false);
+  const [tokenId, setTokenId] = useState('');
   let navigate = useNavigate();
   const gen = () => {
     setVisible(true);
@@ -77,6 +78,7 @@ const Qr = () => {
       `/v2/#/qrcode?mode=mint&tid=${tid}&cid=${uid}&hid=${uid}`;
     Dialog.alert({
       content: <p style={{ padding: "10px", wordBreak: "break-all" }}>{url}</p>,
+      confirmText: i18n.t("qrcode.close"),
       onConfirm: () => {
         console.log("Confirmed");
       },
@@ -84,7 +86,7 @@ const Qr = () => {
   };
 
   const canSign = async () => {
-    const can = CanSign(tid, cid);
+    const can = await CanSign(tid, cid);
     console.log("可以签到", can, req);
     setSign(true);
   };
@@ -152,6 +154,9 @@ const Qr = () => {
     setTimeout(async () => {
       init().then(async (d) => {
         if (d) {
+          const accounts =  await CosmoTool.getAccount();
+          console.log(accounts);
+          uid = accounts || '';
           // 获取ticket的ipfs地址
           const ipfsUri = await tokenURI(tid);
           // 去获取ticket的源信息
@@ -160,25 +165,29 @@ const Qr = () => {
           const time = await HoldTime(tid);
           // 获取票的主办者
           const owner = await isOwner(tid);
+
           console.log(data);
+          const nftId = await tokenIdOf(tid);
+
+          const signer = await isSignMan(tid);
+          setTokenId(nftId as any);
+          setCanSign(signer as any);
           setInfo({
             ...data,
             time,
             owner,
           });
-          const accounts =  await CosmoTool.getAccount();
-          console.log(accounts);
-          const uid = accounts;
           await canInvite();
           await canSign();
           await isSign();
           await canMint();
-          console.log(accounts);
+          console.log(CosmoTool.addressForBech32ToHex(uid || ''));
+        } else {
+          Toast.show({
+            icon: "error",
+            content: i18n.t("qrcode.initError"),
+          });
         }
-        Toast.show({
-          icon: "error",
-          content: i18n.t("qrcode.initError"),
-        });
         return;
       }).catch(() => {
         Toast.show({
@@ -223,11 +232,13 @@ const Qr = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+      <h1>{info?.name}</h1>
         {_isSign && <div className={styles.written}>{i18n.t("qrcode.writeOff")}</div>}
-        <img width={335} height={157} src={info?.image && renderImg(info?.image)} alt="" />
+        <div className={styles.ticket_bg}>
+          <img width={335} height={157} src={info?.image && renderImg(info?.image)} alt="" />
+        </div>
         <div>
           <div className={styles.title}>
-            <h1>{info?.name || "TICKEN"}</h1>
             {_canSign && !_isSign && mode === "ticket" && (
               <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
             )}
@@ -269,12 +280,12 @@ const Qr = () => {
           <label>Asset contract</label>
           <span>Nymph</span>
         </p> */}
-        {/* <p>
+        <p>
           <label style={{ wordBreak: "keep-all", width: "113px" }}>
             Token id
           </label>
-          <span className={styles.elc}>{1}</span>
-        </p> */}
+          <span className={styles.elc}>{tokenId}</span>
+        </p>
         {mode === "sign" && (
           <p>
             <label style={{ wordBreak: "keep-all", width: "113px" }}>
@@ -298,12 +309,12 @@ const Qr = () => {
       <div className={styles.footer}>
         {mode === "mint" && _mint && (
           <Button onClick={_fissionMint} block color="primary" size="large">
-            {i18n.t("qrcode.getId")}
+            {i18n.t("qrcode.getIt")}
           </Button>
         )}
         {
           // 可以加入&没有登记过
-          mode === "sign" && _canSign && !_isSign && (
+          mode === "sign" && _canSign && !_isSign && (_canSigner) && (
             <Button onClick={Sign} block color="primary" size="large">
               {i18n.t("qrcode.writeOff")}
             </Button>
@@ -317,11 +328,11 @@ const Qr = () => {
             </p>
           )
         }
-        {mode === "ticket" && caninvite && (
+        {/* {mode === "ticket" && caninvite && (
           <Button onClick={copy} block color="primary" size="large">
             {i18n.t("qrcode.invite")}
           </Button>
-        )}
+        )} */}
         {/* {
           canInvite() && (
             <div onClick={copy} className={styles.btn}>
@@ -343,7 +354,7 @@ const Qr = () => {
         actions={[
           {
             key: "confirm",
-            text: "close",
+            text: i18n.t("qrcode.close"),
           },
         ]}
       />
