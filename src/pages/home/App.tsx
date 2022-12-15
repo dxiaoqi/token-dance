@@ -19,6 +19,7 @@ import twitter from '../../assert/music/twitter.png';
 function App() {
   let navigate = useNavigate();
   const user = stores.user;
+  console.log(i18n.language);
 
   useEffect(() => {
     initProvide()
@@ -48,8 +49,7 @@ function App() {
   return (
     <div className={styles.container}>
       <div className={styles.logoImages}></div>
-      <div className={styles.titleImages}></div>
-      {/* <div className={styles.wheelImages}></div> */}
+      {'zhCN' === i18n.language ? <div className={styles.titleImages}></div> : <div className={styles.titleImagesEng}></div> }
       <div className={styles.wheelImageWrap}>
         <img src={wheelImg} className={styles.wheelImage}></img>
       </div>
