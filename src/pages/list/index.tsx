@@ -15,7 +15,8 @@ import { objType } from "../../types/index";
 import InviteAvatar from "../../assert/invite_avatar.png";
 import Avatar from "../../assert/invite-avatar.png";
 import { Divider, Toast, Button } from "antd-mobile";
-import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init} from '../../utils/plug'
+import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init} from '../../utils/plug';
+import i18n from '../../i18n';
 
 function List() {
   let navigate = useNavigate();
@@ -24,8 +25,8 @@ function List() {
     user.userInfo.address || localStorage.getItem("walletAddress");
   let uniqueMeetings: string[] = [];
   const [list, setList] = useState<objType[]>();
-  // const [isInWhiteList, setIsInWhiteList] = useState(false);
-  const [isInWhiteList, setIsInWhiteList] = useState(true);
+  const [isInWhiteList, setIsInWhiteList] = useState(false);
+  // const [isInWhiteList, setIsInWhiteList] = useState(true);
 
   const getTickensList = async () => {
     const meetings = await Meeting();
@@ -66,7 +67,7 @@ function List() {
 
   const getWhiteList = async () => {
     const isWhite = await isInWhite();
-    // setIsInWhiteList(isWhite as any);
+    setIsInWhiteList(isWhite as any);
   };
 
   useEffect(() => {
@@ -104,7 +105,7 @@ function List() {
           className={styles.createBtn}
           onClick={mintTicken}
         >
-          Publish
+          {i18n.t('list.publish')}
         </Button>
       )}
       <div className={styles.header}>
