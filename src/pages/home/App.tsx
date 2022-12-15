@@ -79,7 +79,7 @@ function App() {
           如何联系我们
         </div>
         <div className={styles.contactList}>
-          <div className={styles.contactItem}>
+          <div className={styles.contactItem} style={{marginRight:'50px'}}>
             <img className={styles.contactIcon} src={telegram} alt="" />
             <div className={styles.contactIconText}>
               <div className={styles.contactIconTextTitle}>Telegram</div>
