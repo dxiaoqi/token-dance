@@ -15,5 +15,8 @@ export default {
     writeOff: "Write Off",
     invite: "Invite",
     Registered: "The other party has already registered"
+  },
+  list:{
+    publish:"Publish"
   }
 }

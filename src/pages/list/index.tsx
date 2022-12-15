@@ -24,7 +24,8 @@ function List() {
     user.userInfo.address || localStorage.getItem("walletAddress");
   let uniqueMeetings: string[] = [];
   const [list, setList] = useState<objType[]>();
-  const [isInWhiteList, setIsInWhiteList] = useState(false);
+  // const [isInWhiteList, setIsInWhiteList] = useState(false);
+  const [isInWhiteList, setIsInWhiteList] = useState(true);
 
   const getTickensList = async () => {
     const meetings = await Meeting();
@@ -65,7 +66,7 @@ function List() {
 
   const getWhiteList = async () => {
     const isWhite = await isInWhite();
-    setIsInWhiteList(isWhite as any);
+    // setIsInWhiteList(isWhite as any);
   };
 
   useEffect(() => {
@@ -103,7 +104,7 @@ function List() {
           className={styles.createBtn}
           onClick={mintTicken}
         >
-          MINT TICKEN
+          Publish
         </Button>
       )}
       <div className={styles.header}>

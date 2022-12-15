@@ -19,7 +19,6 @@ import twitter from '../../assert/music/twitter.png';
 function App() {
   let navigate = useNavigate();
   const user = stores.user;
-  console.log(i18n.language);
 
   useEffect(() => {
     initProvide()
@@ -35,16 +34,20 @@ function App() {
 
   const connectButton = async () => {
     init().then(async (address) => {
+      console.log("address",address);
       if (address) {
         user.setUser({ address: address });
         localStorage.setItem("walletAddress", address);
+        console.log("address",address);
         Modal.clear();
         navigate("/list");
       }
     }).catch((err) => {
     })
   };
-  console.log(i18n)
+
+
+ 
 
   return (
     <div className={styles.container}>
@@ -67,7 +70,7 @@ function App() {
         核心优势的Web3公链，通过构建聚合式跨链预言机
         协议，致力于高性能信息数据交互的应用场景。
       </div>
-      <div className={styles.btnWrap}>
+      <div className={styles.btnWrap} onClick={connectButton}>
         <div className={styles.btnIcon}></div>
         <div>查阅门票</div>
       </div>

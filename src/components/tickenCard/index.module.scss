@@ -23,10 +23,12 @@
         display: flex;
         justify-content: center;
         align-items: center;
-       
+
         .img {
-            width: 100%;
-            height: 100%;
+            // width: 100%;
+            // height: 100%;
+            width: 335px;
+            height: 157px;
             // margin-top: -10px;
             background-position: center;
             background-repeat: no-repeat;
@@ -35,7 +37,8 @@
         }
 
         .content {
-            width: 100%;
+            width: 335px;
+            vertical-align: bottom;
             position: absolute;
             bottom: 5%;
             display: flex;
