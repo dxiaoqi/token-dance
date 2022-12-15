@@ -206,7 +206,6 @@ export async function tokenIdOf(tid: string) {
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   let address = await CosmoTool.getAccount();
   address = isWallet ? CosmoTool.addressForBech32ToHex(address || '') : address;
-  debugger
   let list = await CosmoTool[reqTool].contractCall(
     tid,
     'tokenIdOf(address)',
@@ -215,7 +214,7 @@ export async function tokenIdOf(tid: string) {
     ]
   );
   list = isWallet ? (list as any)?.data : list;
-  return web3Abi.decodeParameter('uint256', `${list}`) || [];
+  return web3Abi.decodeParameter('uint256', `${list}`) || 0;
 }
 
 export async function isSignMan(tid: string) {
@@ -223,6 +222,7 @@ export async function isSignMan(tid: string) {
   const reqTool = isWallet ? 'walletTool' : 'chromeTool';
   let address = await CosmoTool.getAccount();
   address = isWallet ? CosmoTool.addressForBech32ToHex(address || '') : address;
+
   let list = await CosmoTool[reqTool].contractCall(
     tid,
     'isSignMan(address)',
@@ -231,5 +231,6 @@ export async function isSignMan(tid: string) {
     ]
   );
   list = isWallet ? (list as any)?.data : list;
-  return web3Abi.decodeParameter('bool', `${list}`) || [];
+  console.log('tesr', web3Abi.decodeParameter('bool', `${list}`))
+  return web3Abi.decodeParameter('bool', `${list}`) || false;
 }

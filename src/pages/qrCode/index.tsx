@@ -232,13 +232,13 @@ const Qr = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+      <h1>{info?.name}</h1>
         {_isSign && <div className={styles.written}>{i18n.t("qrcode.writeOff")}</div>}
         <div className={styles.ticket_bg}>
           <img width={335} height={157} src={info?.image && renderImg(info?.image)} alt="" />
         </div>
         <div>
           <div className={styles.title}>
-            <h1>{info?.name || "TICKEN"}</h1>
             {_canSign && !_isSign && mode === "ticket" && (
               <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
             )}
