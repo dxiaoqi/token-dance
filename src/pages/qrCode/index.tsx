@@ -13,7 +13,7 @@ import { Button, Dialog, Toast } from "antd-mobile";
 import { Etherabi } from "../../types/index";
 import { initProvide, INymphabi } from "../../utils/ether";
 import CosmoTool from "../../utils/cosmo/main"
-import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init,  CanInvite, CanSign, IsSign, toSign, balanceOf, fissionMint} from '../../utils/plug'
+import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init,  CanInvite, CanSign, IsSign, toSign, balanceOf, fissionMint, tokenIdOf, isSignMan } from '../../utils/plug'
 import { BigNumber, ethers } from "ethers";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -50,7 +50,8 @@ const Qr = () => {
   const [_isSign, setIsSign] = useState(false);
 
   const [_mint, setCanMint] = useState(false);
-
+  const [_canSigner, setCanSign] = useState(false);
+  const [tokenId, setTokenId] = useState('');
   let navigate = useNavigate();
   const gen = () => {
     setVisible(true);
@@ -164,7 +165,13 @@ const Qr = () => {
           const time = await HoldTime(tid);
           // 获取票的主办者
           const owner = await isOwner(tid);
+
           console.log(data);
+          const nftId = await tokenIdOf(tid);
+
+          const signer = await isSignMan(tid);
+          setTokenId(nftId as any);
+          setCanSign(signer as any);
           setInfo({
             ...data,
             time,
@@ -273,12 +280,12 @@ const Qr = () => {
           <label>Asset contract</label>
           <span>Nymph</span>
         </p> */}
-        {/* <p>
+        <p>
           <label style={{ wordBreak: "keep-all", width: "113px" }}>
             Token id
           </label>
-          <span className={styles.elc}>{1}</span>
-        </p> */}
+          <span className={styles.elc}>{tokenId}</span>
+        </p>
         {mode === "sign" && (
           <p>
             <label style={{ wordBreak: "keep-all", width: "113px" }}>
@@ -307,7 +314,7 @@ const Qr = () => {
         )}
         {
           // 可以加入&没有登记过
-          mode === "sign" && _canSign && !_isSign && (CosmoTool.addressForBech32ToHex(uid || '') == (info?.owner || '').toString()) && (
+          mode === "sign" && _canSign && !_isSign && (_canSigner) && (
             <Button onClick={Sign} block color="primary" size="large">
               {i18n.t("qrcode.writeOff")}
             </Button>
@@ -321,11 +328,11 @@ const Qr = () => {
             </p>
           )
         }
-        {mode === "ticket" && caninvite && (
+        {/* {mode === "ticket" && caninvite && (
           <Button onClick={copy} block color="primary" size="large">
             {i18n.t("qrcode.invite")}
           </Button>
-        )}
+        )} */}
         {/* {
           canInvite() && (
             <div onClick={copy} className={styles.btn}>

@@ -5,12 +5,12 @@ import { Divider, Toast, Dialog } from "antd-mobile";
 import web3Util from 'web3-utils'
 import { hexlify } from 'ethers/lib/utils'
 import CosmoTool from './cosmo/main';
-const CON_ADDR = 'gx1gc8ynwsp4m5f6kdy5rpk4mx3yzdv5qehct5tac'
+const CON_ADDR = 'gx1nd0qj25vmdmmwcem8nr0yle0wyxtexdrvupwqn'
 export async function init() {
   const a = await CosmoTool.applyPermission()
-
+  const dd = CosmoTool.addressForBech32ToHex('gx1a3kg5m4md5tzkgzgpmq95rphjj6v2xl9c8ku5n');
   const address = await CosmoTool.getAccount();
-  console.log(a, address)
+  console.log(a, dd)
   return address;
 }
 export async function Meeting() {
@@ -199,4 +199,37 @@ export async function HoldMeeting(title: string, shortTitle: string, meta: strin
   );
   console.log(list);
   return web3Abi.decodeParameter('address', `${list}`)
+}
+
+export async function tokenIdOf(tid: string) {
+  const isWallet = await CosmoTool.isWallet
+  const reqTool = isWallet ? 'walletTool' : 'chromeTool';
+  let address = await CosmoTool.getAccount();
+  address = isWallet ? CosmoTool.addressForBech32ToHex(address || '') : address;
+  debugger
+  let list = await CosmoTool[reqTool].contractCall(
+    tid,
+    'tokenIdOf(address)',
+    [
+      address,
+    ]
+  );
+  list = isWallet ? (list as any)?.data : list;
+  return web3Abi.decodeParameter('uint256', `${list}`) || [];
+}
+
+export async function isSignMan(tid: string) {
+  const isWallet = await CosmoTool.isWallet
+  const reqTool = isWallet ? 'walletTool' : 'chromeTool';
+  let address = await CosmoTool.getAccount();
+  address = isWallet ? CosmoTool.addressForBech32ToHex(address || '') : address;
+  let list = await CosmoTool[reqTool].contractCall(
+    tid,
+    'isSignMan(address)',
+    [
+      address,
+    ]
+  );
+  list = isWallet ? (list as any)?.data : list;
+  return web3Abi.decodeParameter('bool', `${list}`) || [];
 }
