@@ -8,6 +8,7 @@ import { objType } from "../../types/index";
 import stores from "../../store";
 import { url } from "node:inspector";
 import dayjs from "dayjs";
+import i18n from "../../i18n";
 
 const TickenCard: FC<{ item: objType }> = ({ item }) => {
   let navigate = useNavigate();
@@ -54,12 +55,12 @@ const TickenCard: FC<{ item: objType }> = ({ item }) => {
       <div className={styles.description}>
         <div className={styles.where}>
           <img className={styles.icon} src={whereIcon} alt="whereicon" />
-          <div className={styles.title}>Where</div>
+          <div className={styles.title}>{i18n.t('qrcode.where')}</div>
           <div className={styles.text}>{item.location}</div>
         </div>
         <div className={styles.when}>
           <img className={styles.icon} src={whenIcon} alt="whenicon" />
-          <div className={styles.title}>When</div>
+          <div className={styles.title}>{i18n.t('qrcode.when')}</div>
           <div className={styles.text}>
             {dayjs.unix(Number(item.time)).format("YYYY-MM-DD HH:mm:ss")}
           </div>
