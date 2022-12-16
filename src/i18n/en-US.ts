@@ -6,8 +6,8 @@ export default {
   qrcode: {
     success: 'Verification success',
     error: "Verification failure",
-    joinSuccess: "Join successfully, jump to the homepage after 3s",
-    joinError:  "Join error, please try again",
+    joinSuccess: "Check successfully",
+    joinError:  "Check error, please try again",
     initError: "Please install Pando!",
     where: "Location",
     when: "Time",

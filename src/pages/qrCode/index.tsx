@@ -142,10 +142,10 @@ const Qr = () => {
           icon: "success",
           content: i18n.t("qrcode.joinSuccess"),
         });
-        setTimeout(() => {
-          // 跳转首页
-          navigate("/list");
-        }, 3000);
+        // setTimeout(() => {
+        //   // 跳转首页
+        //   navigate("/list");
+        // }, 3000);
       })
       .catch((err: any) => {
         Toast.show({

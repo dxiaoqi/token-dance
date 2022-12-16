@@ -6,8 +6,8 @@ export default {
   qrcode: {
     success: '验证成功',
     error: "验证失败",
-    joinSuccess: "加入成功，3s后跳转首页",
-    joinError: "加入失败，请重试",
+    joinSuccess: "检验成功",
+    joinError: "检验失败，请重试",
     initError: "请安装 Pando!",
     where: "地点",
     when: "时间",
