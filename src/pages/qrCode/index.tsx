@@ -9,8 +9,9 @@ import InviteAvatar from "../../assert/invite_avatar.png";
 import Avatar from "../../assert/invite-avatar.png";
 import InviteBtn from "../../assert/invite-btn.png";
 import qrCode from "../../assert/qrcode.png";
-import { Button, Dialog, Toast } from "antd-mobile";
+import { Button, Dialog, Toast, Modal } from "antd-mobile";
 import { Etherabi } from "../../types/index";
+import { langMap } from '../../utils/help'
 import { initProvide, INymphabi } from "../../utils/ether";
 import CosmoTool from "../../utils/cosmo/main"
 import { Meeting, tokenURI, isInWhite, HoldTime, isOwner, init,  CanInvite, CanSign, IsSign, toSign, balanceOf, fissionMint, tokenIdOf, isSignMan } from '../../utils/plug'
@@ -20,10 +21,12 @@ import dayjs from "dayjs";
 import i18n from '../../i18n';
 import { useNavigate } from "react-router-dom";
 interface TicketInfo {
+  en_description: string;
   description: string;
   external_url: string;
   image: string;
   name: string;
+  en_name: string;
   location: string;
   time: string;
   owner: string;
@@ -64,7 +67,7 @@ const Qr = () => {
         genQr(ref.current, url);
         showQr = true;
       }
-    }, 300);
+    }, 1000);
   };
   const canInvite = async () => {
     // 判断当前用户是否可以邀请, 票id,当前id
@@ -152,45 +155,38 @@ const Qr = () => {
   };
   const initTicket = async () => {
     setTimeout(async () => {
-      init().then(async (d) => {
-        if (d) {
-          const accounts =  await CosmoTool.getAccount();
-          console.log(accounts);
-          uid = accounts || '';
-          // 获取ticket的ipfs地址
-          const ipfsUri = await tokenURI(tid);
-          // 去获取ticket的源信息
-          const { data } = await axios.get(ipfsUri as any);
-          // 获取ticket的举办时间
-          const time = await HoldTime(tid);
-          // 获取票的主办者
-          const owner = await isOwner(tid);
+      let accounts =  await CosmoTool.getAccount();
+      if (!accounts) {
+        await init()
+      }
+      accounts =  await CosmoTool.getAccount();
+      console.log(accounts);
+      uid = accounts || '';
+      // 获取ticket的ipfs地址
+      const ipfsUri = await tokenURI(tid);
+      // 去获取ticket的源信息
+      const { data } = await axios.get(ipfsUri as any);
+      // 获取ticket的举办时间
+      const time = await HoldTime(tid);
+      // 获取票的主办者
+      const owner = await isOwner(tid);
 
-          console.log(data);
-          const nftId = await tokenIdOf(tid);
+      console.log(data);
+      const nftId = await tokenIdOf(tid);
 
-          const signer = await isSignMan(tid);
-          setTokenId(nftId as any);
-          setCanSign(signer as any);
-          setInfo({
-            ...data,
-            time,
-            owner,
-          });
-          await canInvite();
-          await canSign();
-          await isSign();
-          await canMint();
-          console.log(CosmoTool.addressForBech32ToHex(uid || ''));
-        }
-        return;
-      }).catch(() => {
-        Toast.show({
-          icon: "error",
-          content: i18n.t("qrcode.initError"),
-        });
-        return;
-      })
+      const signer = await isSignMan(tid);
+      setTokenId(nftId as any);
+      setCanSign(signer as any);
+      setInfo({
+        ...data,
+        time,
+        owner,
+      });
+      await canInvite();
+      await canSign();
+      await isSign();
+      await canMint();
+      console.log(CosmoTool.addressForBech32ToHex(uid || ''));
     }, 3000)
   };
   useEffect(() => {
@@ -223,11 +219,12 @@ const Qr = () => {
         return `https://${id}.ipfs.nftstorage.link/${name}`;
       }
     }
+    return image;
   }
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-      <h1>{info?.name}</h1>
+      <h1>{info?.[`${langMap()}name`]}</h1>
         {_isSign && <div className={styles.written}>{i18n.t("qrcode.writeOff")}</div>}
         <div className={styles.ticket_bg}>
           <img style={{ width: '100%' }} src={info?.image && renderImg(info?.image)} alt="" />
@@ -238,7 +235,7 @@ const Qr = () => {
               <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
             )}
           </div>
-          <p>{info?.description}</p>
+          <p style={{ marginTop: '8px'}}>{info?.[`${langMap()}description`]}</p>
         </div>
       </div>
       <div className={styles.meetInfo}>
@@ -346,6 +343,7 @@ const Qr = () => {
         onClose={() => {
           setVisible(false);
         }}
+        closeOnMaskClick={true}
         actions={[
           {
             key: "confirm",

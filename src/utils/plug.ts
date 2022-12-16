@@ -6,11 +6,21 @@ import web3Util from 'web3-utils'
 import { hexlify } from 'ethers/lib/utils'
 import CosmoTool from './cosmo/main';
 const CON_ADDR = 'gx1nd0qj25vmdmmwcem8nr0yle0wyxtexdrvupwqn'
+const logInfo = {
+  address: '',
+  getPermission: false
+}
 export async function init() {
+  // Toast.show(window.navigator.language)
+  if (logInfo.address && logInfo.getPermission) {
+    return logInfo.address;
+  }
   const a = await CosmoTool.applyPermission()
   const dd = CosmoTool.addressForBech32ToHex('gx1wxdvk9u2af6826fnmkxw26n925dl7c5lwhm7sn');
   const address = await CosmoTool.getAccount();
   console.log(a, dd)
+  logInfo.address = address || '';
+  logInfo.getPermission = true;
   return address;
 }
 export async function Meeting() {

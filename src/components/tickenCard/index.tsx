@@ -22,10 +22,11 @@ const TickenCard: FC<{ item: objType }> = ({ item }) => {
   };
 
   const handleClick = () => {
-    navigate({
-      pathname: "/qrcode",
-      search: `?${createSearchParams(params)}`,
-    });
+   // window.location.href = window.location.origin + window.location.pathname + '#/qrcode' + `?${createSearchParams(params)}`
+   navigate({
+    pathname: "/qrcode",
+    search: `?${createSearchParams(params)}`,
+  });
   };
 
   if (item.image.startsWith("ipfs://")) {
