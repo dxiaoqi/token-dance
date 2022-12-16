@@ -8,7 +8,7 @@ import CosmoTool from './cosmo/main';
 const CON_ADDR = 'gx1nd0qj25vmdmmwcem8nr0yle0wyxtexdrvupwqn'
 export async function init() {
   const a = await CosmoTool.applyPermission()
-  const dd = CosmoTool.addressForBech32ToHex('gx1a3kg5m4md5tzkgzgpmq95rphjj6v2xl9c8ku5n');
+  const dd = CosmoTool.addressForBech32ToHex('gx1wxdvk9u2af6826fnmkxw26n925dl7c5lwhm7sn');
   const address = await CosmoTool.getAccount();
   console.log(a, dd)
   return address;

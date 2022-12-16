@@ -21,12 +21,10 @@ import i18n from '../../i18n';
 function List() {
   let navigate = useNavigate();
   const user = stores.user;
-  const userAddress =
-    user.userInfo.address || localStorage.getItem("walletAddress");
+  const [curAddress, setCurrentAddress] = useState('');
   let uniqueMeetings: string[] = [];
   const [list, setList] = useState<objType[]>();
   const [isInWhiteList, setIsInWhiteList] = useState(false);
-  // const [isInWhiteList, setIsInWhiteList] = useState(true);
 
   const getTickensList = async () => {
     const meetings = await Meeting();
@@ -60,9 +58,12 @@ function List() {
   };
 
   useEffect(() => {
-    init().then(() => {
-      getTickensList();
-    })
+    setTimeout(() => {
+      init().then((d: string | null) => {
+        setCurrentAddress(d || '');
+        getTickensList();
+      })
+    }, 3000)
   }, []);
 
   const getWhiteList = async () => {
@@ -75,19 +76,18 @@ function List() {
   }, []);
 
   const copyData = async () => {
-    const copyData =
-      user.userInfo.address || localStorage.getItem("walletAddress");
+    const copyData = curAddress;
 
     try {
       await navigator.clipboard.writeText(copyData as string);
       Toast.show({
         icon: "success",
-        content: "复制成功!",
+        content: i18n.t('list.copySuccess'),
       });
     } catch (err) {
       Toast.show({
         icon: "fail",
-        content: "复制失败!",
+        content: i18n.t('list.copyFailure'),
       });
     }
   };
@@ -113,13 +113,13 @@ function List() {
           <img src={InviteAvatar} alt="" />
           <img src={Avatar} alt="" />
         </div>
-        {user.userInfo.address ? (
+        {curAddress ? (
           <div onClick={copyData} className={styles.address}>
-            {handleAddress(user.userInfo.address)}
+            {handleAddress(curAddress)}
           </div>
         ) : (
           <div onClick={copyData} className={styles.address}>
-            {handleAddress(localStorage.getItem("walletAddress") as string)}
+            {handleAddress(curAddress || '')}
           </div>
         )}
       </div>

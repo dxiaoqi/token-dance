@@ -182,11 +182,6 @@ const Qr = () => {
           await isSign();
           await canMint();
           console.log(CosmoTool.addressForBech32ToHex(uid || ''));
-        } else {
-          Toast.show({
-            icon: "error",
-            content: i18n.t("qrcode.initError"),
-          });
         }
         return;
       }).catch(() => {
@@ -235,7 +230,7 @@ const Qr = () => {
       <h1>{info?.name}</h1>
         {_isSign && <div className={styles.written}>{i18n.t("qrcode.writeOff")}</div>}
         <div className={styles.ticket_bg}>
-          <img width={335} height={157} src={info?.image && renderImg(info?.image)} alt="" />
+          <img style={{ width: '100%' }} src={info?.image && renderImg(info?.image)} alt="" />
         </div>
         <div>
           <div className={styles.title}>

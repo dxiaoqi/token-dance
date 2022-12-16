@@ -104,7 +104,7 @@ export const initProvide = async () => {
   }
 }
 
-export const handleAddress = (address: string) => {
+export const handleAddress = (address: string = '') => {
   let s = address.slice(0, 6);
   let e = address.slice(address.length - 5);
   return (s + "....." + e);
