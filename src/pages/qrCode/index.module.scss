@@ -13,6 +13,13 @@
     h1 {
       margin: 0px;
     }
+    .qrc {
+      position: absolute;
+      right: 31px;
+      top: 90px;
+      z-index: 9999;
+      cursor: pointer;
+    }
     .title {
       display: flex;
       justify-content: space-between;
@@ -42,6 +49,8 @@
       display: flex;
       align-items: center;
       label {
+        width: 60px;
+        word-break: keep-all;
         color: #A6A6A6;
         display: flex;
         margin-right: 36px;

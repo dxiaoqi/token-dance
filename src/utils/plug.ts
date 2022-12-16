@@ -16,9 +16,9 @@ export async function init() {
     return logInfo.address;
   }
   const a = await CosmoTool.applyPermission()
-  const dd = CosmoTool.addressForBech32ToHex('gx1wxdvk9u2af6826fnmkxw26n925dl7c5lwhm7sn');
   const address = await CosmoTool.getAccount();
-  console.log(a, dd)
+  const dd = CosmoTool.addressForBech32ToHex(address || '');
+  console.log(a, dd as any)
   logInfo.address = address || '';
   logInfo.getPermission = true;
   return address;
@@ -140,6 +140,7 @@ export async function IsSign(address: string, cid: string) {
       _cid
     ]
   );
+  console.log(666, address, cid, _address);
   list = isWallet ? (list as any)?.data : list;
   return web3Abi.decodeParameter('bool', `${list}`)
 }

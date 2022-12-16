@@ -28,6 +28,7 @@ interface TicketInfo {
   name: string;
   en_name: string;
   location: string;
+  en_location: string;
   time: string;
   owner: string;
 }
@@ -77,8 +78,8 @@ const Qr = () => {
   };
   const copy = () => {
     const url =
-      window.location.origin +
-      `/v2/#/qrcode?mode=mint&tid=${tid}&cid=${uid}&hid=${uid}`;
+      window.location.origin + window.location.pathname +
+      `#/qrcode?mode=mint&tid=${tid}&cid=${uid}&hid=${uid}`;
     Dialog.alert({
       content: <p style={{ padding: "10px", wordBreak: "break-all" }}>{url}</p>,
       confirmText: i18n.t("qrcode.close"),
@@ -227,15 +228,18 @@ const Qr = () => {
       <h1>{info?.[`${langMap()}name`]}</h1>
         {_isSign && <div className={styles.written}>{i18n.t("qrcode.writeOff")}</div>}
         <div className={styles.ticket_bg}>
+            {_canSign && !_isSign && mode === "ticket" && (
+              <img className={styles.qrc} onClick={gen} width={20} height={20} src={qrCode} alt="" />
+            )}
           <img style={{ width: '100%' }} src={info?.image && renderImg(info?.image)} alt="" />
         </div>
         <div>
-          <div className={styles.title}>
+          {/* <div className={styles.title}>
             {_canSign && !_isSign && mode === "ticket" && (
               <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
             )}
-          </div>
-          <p style={{ marginTop: '8px'}}>{info?.[`${langMap()}description`]}</p>
+          </div> */}
+          <p style={{ marginTop: '8px', fontSize: '14px'}}>{info?.[`${langMap()}description`]}</p>
         </div>
       </div>
       <div className={styles.meetInfo}>
@@ -244,7 +248,7 @@ const Qr = () => {
             <img width={21} height={21} src={Where} alt="" />
             {i18n.t("qrcode.where")}
           </label>
-          <span>{info?.location}</span>
+          <span>{info?.[`${langMap()}location`]}</span>
         </div>
 
         <div className={styles.infoItem}>

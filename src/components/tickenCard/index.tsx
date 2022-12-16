@@ -6,6 +6,7 @@ import whereIcon from "../.././assert/where.png";
 import whenIcon from "../.././assert/when.png";
 import { objType } from "../../types/index";
 import stores from "../../store";
+import CosmoTool from '../../utils/cosmo/main'
 import { url } from "node:inspector";
 import dayjs from "dayjs";
 import i18n from "../../i18n";
@@ -21,8 +22,10 @@ const TickenCard: FC<{ item: objType }> = ({ item }) => {
     mode: "ticket",
   };
 
-  const handleClick = () => {
+  const handleClick = async () => {
    // window.location.href = window.location.origin + window.location.pathname + '#/qrcode' + `?${createSearchParams(params)}`
+   const address = await CosmoTool.getAccount();
+   params.cid = address || '';
    navigate({
     pathname: "/qrcode",
     search: `?${createSearchParams(params)}`,
