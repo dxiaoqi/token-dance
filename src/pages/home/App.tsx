@@ -52,27 +52,26 @@ function App() {
   return (
     <div className={styles.container}>
       <div className={styles.logoImages}></div>
-      {'zhCN' === i18n.language ? <div className={styles.titleImages}></div> : <div className={styles.titleImagesEng}></div> }
+      {'zh-CN' === i18n.language ? <div className={styles.titleImages}></div> : <div className={styles.titleImagesEng}></div> }
       <div className={styles.wheelImageWrap}>
         <img src={wheelImg} className={styles.wheelImage}></img>
       </div>
       <div className={styles.tickenIntro}>
-        <div className={styles.tickenIntroTitle}>{`Ticken是一款结合了NFT社交游戏的票务工具产品,在这里：`}</div>
+        {/* <div>{'zhCN' === i18n.language}</div> */}
+        <div className={styles.tickenIntroTitle}>{i18n.t('home.tickenIntroTitle')}</div>
         <ul className={styles.tickenIntroContent}>
-          <li className={styles.tickenIntroItem}>票即NFT: 人人科创</li>
-          <li className={styles.tickenIntroItem}>AIGC联动: 新潮玩法</li>
-          <li className={styles.tickenIntroItem}>WEB3社交: 灵魂绑定</li>
-          <li className={styles.tickenIntroItem}>开放协议: 无限可能</li>
+          <li className={styles.tickenIntroItem}>{i18n.t('home.tickenIntroOne')}</li>
+          <li className={styles.tickenIntroItem}>{i18n.t('home.tickenIntroTwo')}</li>
+          <li className={styles.tickenIntroItem}>{i18n.t('home.tickenIntroThree')}</li>
+          <li className={styles.tickenIntroItem}>{i18n.t('home.tickenIntroFour')}</li>
         </ul>
       </div>
       <div className={styles.plugChainIntro}>
-        PlugChain是一条高并发性、低Gas费、易拓展性为
-        核心优势的Web3公链，通过构建聚合式跨链预言机
-        协议，致力于高性能信息数据交互的应用场景。
+        {i18n.t('home.plugChainIntro')}
       </div>
       <div className={styles.btnWrap} onClick={connectButton}>
         <div className={styles.btnIcon}></div>
-        <div>查阅门票</div>
+        <div>{i18n.t('home.viewTicket')}</div>
       </div>
       <div className={styles.contactWrap}>
         <div className={styles.contact}>

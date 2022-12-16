@@ -1,7 +1,14 @@
 export default {
   home: {
     title: '欢迎来到Ticken111',
-    contact:'联系方式'
+    contact:'联系方式',
+    viewTicket:'查阅门票',
+    tickenIntroTitle:'Ticken是一款结合了NFT社交游戏的票务工具产品,在这里:',
+    tickenIntroOne:'票即NFT: 人人科创',
+    tickenIntroTwo:'AIGC联动: 新潮玩法',
+    tickenIntroThree:'WEB3社交: 灵魂绑定',
+    tickenIntroFour:'开放协议: 无限可能',
+    plugChainIntro:'PlugChain是一条高并发性、低Gas费、易拓展性为核心优势的Web3公链，通过构建聚合式跨链预言机协议，致力于高性能信息数据交互的应用场景。'
   },
   qrcode: {
     success: '验证成功',

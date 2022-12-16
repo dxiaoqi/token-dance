@@ -1,7 +1,14 @@
 export default {
   home: {
     title: 'Welcome to Ticken',
-    contact:'Contact'
+    contact:'Contact Us',
+    viewTicket:'VIEW TICKET',
+    tickenIntroTitle:'Ticketen is a ticketing tool combined with NFT social games! Here:',
+    tickenIntroOne:'Tickets are NFT: Everyone can innovate！',
+    tickenIntroTwo:'AIGC linkage: Attractive gameplay!',
+    tickenIntroThree:'WEB3 Social: Soul Binding!',
+    tickenIntroFour:'Open Protocol: Create Infinite Possibilities！',
+    plugChainIntro:'PlugChain is a Web3 public chain with high concurrency, low gas fee, and easy scalability as its core advantages. By building an aggregated cross-chain oracle protocol, it is committed to the application of high-performance information and data interaction.'
   },
   qrcode: {
     success: 'Verification success',
