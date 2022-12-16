@@ -76,7 +76,7 @@ function App() {
       </div>
       <div className={styles.contactWrap}>
         <div className={styles.contact}>
-          如何联系我们
+          {i18n.t('home.contact')}
         </div>
         <div className={styles.contactList}>
           <div className={styles.contactItem} style={{marginRight:'50px'}}>

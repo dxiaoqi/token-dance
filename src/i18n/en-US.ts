@@ -1,6 +1,7 @@
 export default {
   home: {
-    title: 'Welcome to Ticken'
+    title: 'Welcome to Ticken',
+    contact:'Contact'
   },
   qrcode: {
     success: 'Verification success',

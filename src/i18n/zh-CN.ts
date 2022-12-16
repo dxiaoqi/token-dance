@@ -1,6 +1,7 @@
 export default {
   home: {
-    title: '欢迎来到Ticken111'
+    title: '欢迎来到Ticken111',
+    contact:'联系方式'
   },
   qrcode: {
     success: '验证成功',
