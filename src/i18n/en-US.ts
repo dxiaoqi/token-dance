@@ -15,7 +15,7 @@ export default {
     getIt: "Get it",
     writeOff: "Write Off",
     invite: "Invite",
-    Registered: "The other party has already registered",
+    Registered: "对方已经被核验",
     close: "Close",
   },
   list:{

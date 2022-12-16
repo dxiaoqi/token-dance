@@ -15,7 +15,7 @@ export default {
     getIt: "获取",
     writeOff: "核销",
     invite: "邀请",
-    Registered: "对方已经注册",
+    Registered: "对方已经被核验",
     close: "关闭",
   },
   list: {
