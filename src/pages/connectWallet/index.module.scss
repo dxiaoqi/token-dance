@@ -5,6 +5,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position:fixed;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  overflow-y:auto;
+  overflow-x: hidden;
 }
 
 .connectContainer {
@@ -85,4 +92,8 @@
         margin-top: 15px;
         margin-bottom: 23px;
     }
+}
+
+.container::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
 }

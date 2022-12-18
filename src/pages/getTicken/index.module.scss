@@ -7,6 +7,13 @@
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
+    position:fixed;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  overflow-y:auto;
+  overflow-x: hidden;
 
     .overlay {
         height: 100vh;
@@ -73,7 +80,8 @@
             background-size: cover;
         }
     }
+}
 
-   
-
+.container::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
 }

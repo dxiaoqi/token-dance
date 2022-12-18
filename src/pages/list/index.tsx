@@ -97,6 +97,7 @@ function List() {
   };
 
   return (
+   <div className={styles.containerWrapper}>
     <div className={styles.container}>
       {isInWhiteList && (
         <Button
@@ -127,6 +128,7 @@ function List() {
         {list &&
           list.map((item, index) => <TickenCard item={item} key={index} />)}
       </div>
+    </div>
     </div>
   );
 }

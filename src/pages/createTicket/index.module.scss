@@ -3,6 +3,13 @@
   // padding: 0px 23px;
   position: relative;
   background: #303030;
+  position:fixed;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  overflow-y:auto;
+  overflow-x: hidden;
   .bg {
     position: absolute;
     left: 0;
@@ -136,4 +143,9 @@
     font-weight: bold;
     text-align: center;
   }
+}
+
+
+.container::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
 }
