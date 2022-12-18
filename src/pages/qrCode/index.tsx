@@ -61,7 +61,8 @@ const Qr = () => {
     setVisible(true);
     // cid 参赛人的id
     const url =
-      window.location.origin + `/v2/#/qrcode?mode=sign&tid=${tid}&cid=${uid}`;
+    window.location.origin + window.location.pathname + 
+      `#/qrcode?mode=sign&tid=${tid}&cid=${uid}`;
     console.log(`${JSON.stringify({ data: url })}`);
     setTimeout(() => {
       if (ref.current && !showQr) {
