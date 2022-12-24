@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import querystring from "query-string";
 import { genQr } from "../../utils/qrcode";
+import QRCode from 'qrcode.react'
 import styles from "./index.module.scss";
 import Icon from "../../assert/icon.png";
 import Where from "../../assert/where.png";
@@ -59,18 +60,21 @@ const Qr = () => {
   let navigate = useNavigate();
   const gen = () => {
     setVisible(true);
-    // cid 参赛人的id
-    const url =
-    window.location.origin + window.location.pathname + 
-      `#/qrcode?mode=sign&tid=${tid}&cid=${uid}`;
-    console.log(`${JSON.stringify({ data: url })}`);
-    setTimeout(() => {
-      if (ref.current && !showQr) {
-        genQr(ref.current, url);
-        showQr = true;
-      }
-    }, 1000);
   };
+  // useEffect(() => {
+  //   // cid 参赛人的id
+  //   if (!visible) return;
+  //   const url =
+  //   window.location.origin + window.location.pathname + 
+  //     `#/qrcode?mode=sign&tid=${tid}&cid=${uid}`;
+  //   console.log(`${JSON.stringify({ data: url })}`);
+  //   setTimeout(() => {
+  //     if (ref.current && !showQr) {
+  //       genQr(ref.current, url);
+  //       showQr = true;
+  //     }
+  //   }, 1000);
+  // }, [visible])
   const canInvite = async () => {
     // 判断当前用户是否可以邀请, 票id,当前id
     const can = await CanInvite(tid);
@@ -223,6 +227,10 @@ const Qr = () => {
     }
     return image;
   }
+
+  const qrUrl =
+  window.location.origin + window.location.pathname + 
+    `#/qrcode?mode=sign&tid=${tid}&cid=${uid}`;
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -343,7 +351,9 @@ const Qr = () => {
         style={{
           width: 300,
         }}
-        content={<div ref={ref}></div>}
+        content={<div>
+          <QRCode size={260} value={qrUrl} renderAs="canvas" />
+        </div>}
         closeOnAction
         onClose={() => {
           setVisible(false);
