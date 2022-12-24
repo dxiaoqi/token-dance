@@ -2,15 +2,21 @@
   background-color:  #000000;
   padding: 0px 23px;
   min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
   .header {
     padding-top: 52px;
-    display: flex;
+    // display: flex;
     color: aliceblue;
+    .bg_title {
+      width: 100%;
+    }
     img {
       margin-right: 26px;
     }
     h1 {
       margin: 0px;
+      margin-bottom: 6px;
     }
     .title {
       display: flex;
@@ -18,7 +24,7 @@
       img {
         position: absolute;
         right: 0px;
-        top: 59px;
+        top: 90px;
         cursor: pointer;
       }
     }
@@ -26,6 +32,13 @@
       opacity: 0.5;
       word-wrap: break-word;
     }
+  }
+  .desc {
+    font-size: 14px;
+    margin-top: 6px;
+    color: aliceblue;
+    opacity: 0.5;
+    word-wrap: break-word;
   }
   .meetInfo {
     margin-top: 20px;

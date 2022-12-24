@@ -222,18 +222,18 @@ const Qr = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+        <h1>{info?.name || "Token Dance"}</h1>
         {_isSign && <div className={styles.written}>written off</div>}
-        <img width={100} height={100} src={info?.image && renderImg(info?.image)} alt="" />
+        <img className={styles.bg_title} src={info?.image && renderImg(info?.image)} alt="" />
         <div>
           <div className={styles.title}>
-            <h1>{info?.name || "Token Dance"}</h1>
             {_canSign && !_isSign && mode === "ticket" && (
               <img onClick={gen} width={20} height={20} src={qrCode} alt="" />
             )}
           </div>
-          <p>{info?.description}</p>
         </div>
       </div>
+      <p className={styles.desc}>{info?.description}</p>
       <div className={styles.meetInfo}>
         <div style={{ marginBottom: "12px" }} className={styles.infoItem}>
           <label>
@@ -284,7 +284,7 @@ const Qr = () => {
         )}
       </div>
       <div className={styles.line}></div>
-      {mode === "ticket" && (
+      {/* {mode === "ticket" && (
         <div className={styles.invite}>
           {[11, 22].map((e) => (
             <div className={styles.avatar}>
@@ -293,7 +293,7 @@ const Qr = () => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
       <div className={styles.footer}>
         {mode === "mint" && _mint && (
           <Button onClick={_fissionMint} block color="primary" size="large">
