@@ -3,6 +3,15 @@
     height: 100vh;
     background: #001419;
     padding-top: 3vh;
+    position:fixed;
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
+    overflow-y:auto;
+    overflow-x: hidden;
+    scroll-bar:none;
+
 }
 
 .overlay {
@@ -202,4 +211,8 @@
             opacity: 0.5;
         }
     }
+}
+
+.container::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
 }

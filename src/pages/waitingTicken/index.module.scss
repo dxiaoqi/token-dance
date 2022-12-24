@@ -41,3 +41,7 @@
     line-height: 38px;
     color: #FFFBFF;
 }
+
+.container::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+}
