@@ -40,6 +40,7 @@ const Qr = () => {
   const mode = search.mode; // 票据详情 ticket 加入票据 mint 验证 sign
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const [_canSigner, setCanSign] = useState(false);
   const [info, setInfo] = useState<TicketInfo>();
   const [caninvite, setCanInvite] = useState(false);
   const [_canSign, setSign] = useState(false);
@@ -47,7 +48,7 @@ const Qr = () => {
   const [_isSign, setIsSign] = useState(false);
 
   const [_mint, setCanMint] = useState(false);
-
+  const [tokenId, setTokenId] = useState('');
   let navigate = useNavigate();
   const gen = () => {
     setVisible(true);
@@ -182,6 +183,12 @@ const Qr = () => {
     const accounts = await web3Provider.send("eth_requestAccounts", []);
     console.log(accounts);
     uid = accounts?.[0];
+    // 是否是可以验票的
+    const isSignMan = await contract?.isSignMan(uid);
+    setCanSign(isSignMan);
+    // 获取tokenId
+    const tokenID = await contract?.tokenIdOf(uid);
+    setTokenId(tokenID);
     await canInvite();
     await canSign();
     await isSign();
@@ -218,7 +225,9 @@ const Qr = () => {
         return `https://${id}.ipfs.nftstorage.link/${name}`;
       }
     }
+    return image
   }
+  console.log(777, tokenId && BigNumber.from(tokenId).toString())
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -272,7 +281,7 @@ const Qr = () => {
           <label style={{ wordBreak: "keep-all", width: "113px" }}>
             Token id
           </label>
-          <span className={styles.elc}>{1}</span>
+          <span className={styles.elc}>{tokenId && BigNumber.from(tokenId).toString()}</span>
         </p>
         {mode === "sign" && (
           <p>
@@ -302,7 +311,7 @@ const Qr = () => {
         )}
         {
           // 可以加入&没有登记过
-          mode === "sign" && _canSign && !_isSign && (
+          mode === "sign" && _canSign && !_isSign && (_canSigner) && (
             <Button onClick={Sign} block color="primary" size="large">
               Write off
             </Button>

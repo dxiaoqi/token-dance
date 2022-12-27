@@ -51,7 +51,9 @@ export const INymphabi = [
   "function tokenURI(uint256) view returns (string)",
   "function supportsInterface(bytes4) view returns (bool)",
   "function transferFrom(address,address,uint256)",
-  "function isInWhite(address) view returns (bool)"
+  "function isInWhite(address) view returns (bool)",
+  "function tokenIdOf(address) view returns (uint256)",
+  "function isSignMan(address) view returns (bool)"
 ]
 
 
