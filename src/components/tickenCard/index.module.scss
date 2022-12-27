@@ -36,11 +36,14 @@
         }
 
         .content {
-            width: 100%;
+            width: 335px;
+            vertical-align: bottom;
             position: absolute;
-            bottom: 5%;
+            bottom: 0%;
             display: flex;
             justify-content: space-between;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+            padding:10px;
 
             .title {
                 margin-left: 11px;

@@ -187,7 +187,7 @@ const Qr = () => {
     const isSignMan = await contract?.isSignMan(uid);
     setCanSign(isSignMan);
     // 获取tokenId
-    const tokenID = await contract?.tokenIdOf(uid);
+    const tokenID = await contract?.tokenIdOf(cid);
     setTokenId(tokenID);
     await canInvite();
     await canSign();
