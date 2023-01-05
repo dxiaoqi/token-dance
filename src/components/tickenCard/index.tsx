@@ -54,12 +54,12 @@ const TickenCard: FC<{ item: objType }> = ({ item }) => {
       <div className={styles.description}>
         <div className={styles.where}>
           <img className={styles.icon} src={whereIcon} alt="whereicon" />
-          <div className={styles.title}>Where</div>
+          <div className={styles.title}>Location</div>
           <div className={styles.text}>{item.location}</div>
         </div>
         <div className={styles.when}>
           <img className={styles.icon} src={whenIcon} alt="whenicon" />
-          <div className={styles.title}>When</div>
+          <div className={styles.title}>Time</div>
           <div className={styles.text}>
             {dayjs.unix(Number(item.time)).format("YYYY-MM-DD HH:mm:ss")}
           </div>

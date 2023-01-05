@@ -247,7 +247,7 @@ const Qr = () => {
         <div style={{ marginBottom: "12px" }} className={styles.infoItem}>
           <label>
             <img width={21} height={21} src={Where} alt="" />
-            Where
+            Location
           </label>
           <span>{info?.location}</span>
         </div>
@@ -255,7 +255,7 @@ const Qr = () => {
         <div className={styles.infoItem}>
           <label>
             <img width={21} height={21} src={When} alt="" />
-            When
+            Time
           </label>
           <span>
             {info?.time &&

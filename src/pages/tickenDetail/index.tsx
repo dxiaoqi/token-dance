@@ -73,12 +73,12 @@ function List() {
                         <div className={styles.headerInfo}>
                             <div className={styles.where}>
                                 <img className={styles.icon} src={whereIcon} alt="whereicon" />
-                                <div className={styles.title}>Where</div>
+                                <div className={styles.title}>Location</div>
                                 <div className={styles.text}>{tickenDetail.location}</div>
                             </div>
                             <div className={styles.when}>
                                 <img className={styles.icon} src={whenIcon} alt="whenicon" />
-                                <div className={styles.title}>When</div>
+                                <div className={styles.title}>Time</div>
                                 <div className={styles.text}>{tickenDetail.time._hex}</div>
                             </div>
                         </div>
