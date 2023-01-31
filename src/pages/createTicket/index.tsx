@@ -247,6 +247,7 @@ const CreateTicket = () => {
         <Form
           ref={formRef}
           name="form"
+          onFieldsChange={d => console.log(d)}
           onFinish={onFinish}
           onFinishFailed={inputError}
           footer={
@@ -273,62 +274,60 @@ const CreateTicket = () => {
               ]}
             />
             {
-              uploadMode === 'user' ? (
-                <Form.Item
-                  name="image"
-                  label="Upload Image"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please upload a face picture",
-                    },
-                  ]}
-                >
-                  <ImageUploader
-                    value={fileList}
-                    onChange={setFileList}
-                    upload={uploadFun}
-                    maxCount={1}
-                    imageFit="contain"
-                    showUpload={fileList.length < 1}
-                    onCountExceed={(exceed) => {}}
-                  />
-                </Form.Item>
-              ) : (
-                <div>
-                  <Form.Item
-                    extra={
-                      <div className={styles.extraPart}>
-                        <a onClick={genAiGc}>Generate</a>
-                      </div>
-                    }
-                  >
-                    <Input onChange={setAigcText} placeholder='input the text that generated image' clearable />
-                  </Form.Item>
-                  <Form.Item
-                    name="image"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please generate a face picture",
-                      },
-                    ]}
-                  >
-                    <ImageUploader
-                      value={fileList}
-                      onChange={setFileList}
-                      upload={uploadFun}
-                      deletable={false}
-                      maxCount={1}
-                      imageFit="contain"
-                      showUpload={false}
-                      onCountExceed={(exceed) => {}}
-                    />
-                  </Form.Item>
-                </div>
-              )
-              
-              
+                            uploadMode === 'aigc' ? (
+                              <div>
+                                <Form.Item
+                                  extra={
+                                    <div className={styles.extraPart}>
+                                      <a onClick={genAiGc}>Generate</a>
+                                    </div>
+                                  }
+                                >
+                                  <Input onChange={setAigcText} placeholder='input the text that generated image' clearable />
+                                </Form.Item>
+                                <Form.Item
+                                  name="image"
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: "Please generate a face picture",
+                                    },
+                                  ]}
+                                >
+                                  <ImageUploader
+                                    value={fileList}
+                                    onChange={setFileList}
+                                    upload={uploadFun}
+                                    deletable={false}
+                                    maxCount={1}
+                                    imageFit="contain"
+                                    showUpload={false}
+                                    onCountExceed={(exceed) => {}}
+                                  />
+                                </Form.Item>
+                              </div>
+                            ) : (
+                              <Form.Item
+                                name="image"
+                                label="Upload Image"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please upload a face picture",
+                                  },
+                                ]}
+                              >
+                                <ImageUploader
+                                  value={fileList}
+                                  onChange={setFileList}
+                                  upload={uploadFun}
+                                  maxCount={1}
+                                  imageFit="contain"
+                                  showUpload={fileList.length < 1}
+                                  onCountExceed={(exceed) => {}}
+                                />
+                              </Form.Item>
+                            ) 
             }
 
           <Form.Item
@@ -378,13 +377,6 @@ const CreateTicket = () => {
               },
             ]}
           >
-            <Radio.Group>
-            <Radio.Group>
-                <Space direction='vertical' block={true}>
-                  {/* <Radio value='1'>ordinary</Radio>
-                  <Radio value='2'>fission</Radio>
-                  <Radio value='3'>secret</Radio>
-                  <Radio value='4'>invite</Radio> */}
                   <Selector
                     columns={2}
                     style={{
@@ -416,11 +408,8 @@ const CreateTicket = () => {
                         value: '4',
                       },
                     ]}
-                    defaultValue={['1']}
+                    // defaultValue={['1']}
                   />
-                </Space>
-              </Radio.Group>
-            </Radio.Group>
           </Form.Item>
           <Form.Item
             required

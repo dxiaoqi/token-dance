@@ -17,7 +17,6 @@ const ImageCrop = (props: ImageCropProps) => {
     const image = document.getElementById('js__image-crop') as HTMLImageElement;
     const _cropper = new Cropper(image, {
       autoCrop: false,
-      aspectRatio: 1,
       dragMode: 'move',
       // minCropBoxWidth: 10,
       // minCropBoxHeight: 10,
@@ -30,8 +29,8 @@ const ImageCrop = (props: ImageCropProps) => {
         // And then
         _cropper.crop();
         _cropper.setCropBoxData({
-          width: 100,
-          height: 100
+          width: 335,
+          height: 157,
         })
       },
       crop(event) {
@@ -50,8 +49,8 @@ const ImageCrop = (props: ImageCropProps) => {
     console.log(cropper);
     if(cropper) {
       const test = cropper.getCroppedCanvas({
-        width: 100,
-        height: 100,
+        width: 335,
+        height: 157,
         // minWidth: 100,
         // minHeight: 100,
         // maxWidth: 100,
