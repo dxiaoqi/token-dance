@@ -91,12 +91,11 @@ export declare namespace EventInfo {
 export interface AdminInterface extends utils.Interface {
   functions: {
     "createEvent(string,string,uint256,uint256,uint256,string,address)": FunctionFragment;
-    "eventsForOwner()": FunctionFragment;
-    "eventsForUser()": FunctionFragment;
+    "eventsForOwner(address)": FunctionFragment;
+    "eventsForUser(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "updateLogic(address)": FunctionFragment;
   };
 
   getFunction(
@@ -107,7 +106,6 @@ export interface AdminInterface extends utils.Interface {
       | "owner"
       | "renounceOwnership"
       | "transferOwnership"
-      | "updateLogic"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -124,11 +122,11 @@ export interface AdminInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "eventsForOwner",
-    values?: undefined
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "eventsForUser",
-    values?: undefined
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -137,10 +135,6 @@ export interface AdminInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "updateLogic",
     values: [PromiseOrValue<string>]
   ): string;
 
@@ -163,10 +157,6 @@ export interface AdminInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateLogic",
     data: BytesLike
   ): Result;
 
@@ -241,10 +231,12 @@ export interface Admin extends BaseContract {
     ): Promise<ContractTransaction>;
 
     eventsForOwner(
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[EventInfo.AllInfoStructOutput[]]>;
 
     eventsForUser(
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[EventInfo.AllInfoStructOutput[]]>;
 
@@ -256,11 +248,6 @@ export interface Admin extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateLogic(
-      _newLogin: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -277,10 +264,12 @@ export interface Admin extends BaseContract {
   ): Promise<ContractTransaction>;
 
   eventsForOwner(
+    owner: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<EventInfo.AllInfoStructOutput[]>;
 
   eventsForUser(
+    user: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<EventInfo.AllInfoStructOutput[]>;
 
@@ -292,11 +281,6 @@ export interface Admin extends BaseContract {
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateLogic(
-    _newLogin: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -313,10 +297,12 @@ export interface Admin extends BaseContract {
     ): Promise<void>;
 
     eventsForOwner(
+      owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<EventInfo.AllInfoStructOutput[]>;
 
     eventsForUser(
+      user: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<EventInfo.AllInfoStructOutput[]>;
 
@@ -326,11 +312,6 @@ export interface Admin extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateLogic(
-      _newLogin: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -367,9 +348,15 @@ export interface Admin extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    eventsForOwner(overrides?: CallOverrides): Promise<BigNumber>;
+    eventsForOwner(
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    eventsForUser(overrides?: CallOverrides): Promise<BigNumber>;
+    eventsForUser(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -379,11 +366,6 @@ export interface Admin extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateLogic(
-      _newLogin: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -400,9 +382,15 @@ export interface Admin extends BaseContract {
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    eventsForOwner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    eventsForOwner(
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    eventsForUser(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    eventsForUser(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -412,11 +400,6 @@ export interface Admin extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateLogic(
-      _newLogin: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

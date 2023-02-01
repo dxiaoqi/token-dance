@@ -15,7 +15,7 @@ import { objType } from "../../types/index";
 import InviteAvatar from "../../assert/invite_avatar.png";
 import Avatar from "../../assert/invite-avatar.png";
 import { Divider, Toast, Button } from "antd-mobile";
-import { Admin__factory } from '../../utils/typechain-types'
+import { Admin__factory, Event__factory } from "../../utils/typechain-types";
 
 function List() {
   let navigate = useNavigate();
@@ -36,6 +36,18 @@ function List() {
 
     const meetings = await contract.Meetings(userAddress);
     getTicken(meetings);
+  };
+
+  const getTickenV2 = async () => {
+    const signer = await web3Provider.getSigner();
+    const address = await signer.getAddress();
+    const adminContract = Admin__factory.connect(
+      "0x710e63793974bAd88375720aACfD0c57d18D4573",
+      web3Provider
+    );
+    // console.log("Account:", address);
+    const list = await adminContract.eventsForOwner(address);
+    console.log("user list", list);
   };
 
   const getTicken = async (arr: string[]) => {
@@ -75,13 +87,14 @@ function List() {
       INymphabi,
       web3Provider
     );
-    console.log("userAddress",userAddress);
+    console.log("userAddress", userAddress);
     const isWhite = await contract.isInWhite(userAddress);
     setIsInWhiteList(isWhite);
   };
 
   useEffect(() => {
     getWhiteList();
+    getTickenV2();
   }, []);
 
   const copyData = async () => {
@@ -107,13 +120,13 @@ function List() {
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-   const _ = Admin__factory.connect( "0x4004B559eB1A1C92bd9168aACd7819E352420E6a", web3Provider);
-   _.eventsForUser().then((d: any) =>  {
-    console.log(d);
-   }).catch(() => {
-    console.log("errr");
-   })
+    // const event = Event__factory.connect(
+    //   "0x689c9590950E7E87bc7FF84e02bA3f613cD13732",
+    //   provider
+    // );
+    // event.allUserInfo(address).then((userInfo) => {
+    //   console.log("User Info", userInfo);
+    // });
   }, []);
   return (
     <div className={styles.container}>
